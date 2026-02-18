@@ -64,8 +64,8 @@ export default function Login() {
 
         {/* Footer links for left side */}
         <div className="relative z-10 mt-10 lg:mt-0 hidden lg:flex gap-6 text-sm text-gray-400">
-          <Link className="hover:text-white transition-colors" href="#">Privacy Policy</Link>
-          <Link className="hover:text-white transition-colors" href="#">Terms of Service</Link>
+          <Link className="hover:text-white transition-colors" href="/privacy">Privacy Policy</Link>
+          <Link className="hover:text-white transition-colors" href="/terms">Terms of Service</Link>
         </div>
       </div>
 
@@ -77,8 +77,8 @@ export default function Login() {
 
         {/* Mobile footer links */}
         <div className="absolute bottom-6 left-0 w-full flex justify-center gap-6 text-xs text-gray-500 lg:hidden">
-          <Link className="hover:text-slate-900 dark:hover:text-white" href="#">Privacy</Link>
-          <Link className="hover:text-slate-900 dark:hover:text-white" href="#">Terms</Link>
+          <Link className="hover:text-slate-900 dark:hover:text-white" href="/privacy">Privacy</Link>
+          <Link className="hover:text-slate-900 dark:hover:text-white" href="/terms">Terms</Link>
         </div>
       </div>
     </div>
