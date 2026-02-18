@@ -2,6 +2,18 @@
 
 import { QuizQuestion } from "./ai"
 
+// In-memory cache for quizzes to avoid frequent localStorage access and JSON parsing
+let cachedQuizzes: SavedQuiz[] | null = null
+
+// Listen for storage changes in other tabs to invalidate the cache
+if (typeof window !== "undefined") {
+    window.addEventListener("storage", (event) => {
+        if (event.key === "studyflow_quizzes") {
+            cachedQuizzes = null
+        }
+    })
+}
+
 // Saved quiz interface
 export interface SavedQuiz {
     id: string
@@ -39,11 +51,21 @@ const QUIZZES_KEY = "studyflow_quizzes"
 export function getUserQuizzes(): SavedQuiz[] {
     if (typeof window === "undefined") return []
 
+    // Return cached data if available
+    if (cachedQuizzes !== null) {
+        return [...cachedQuizzes]
+    }
+
     try {
         const data = localStorage.getItem(QUIZZES_KEY)
-        if (!data) return []
-        return JSON.parse(data) as SavedQuiz[]
+        if (!data) {
+            cachedQuizzes = []
+            return []
+        }
+        cachedQuizzes = JSON.parse(data) as SavedQuiz[]
+        return [...cachedQuizzes]
     } catch {
+        cachedQuizzes = []
         return []
     }
 }
@@ -68,10 +90,11 @@ export function saveQuiz(quiz: Omit<SavedQuiz, "id" | "createdAt">): SavedQuiz {
         createdAt: new Date().toISOString(),
     }
 
-    quizzes.unshift(newQuiz) // Add to beginning (most recent first)
+    const updatedQuizzes = [newQuiz, ...quizzes]
+    cachedQuizzes = updatedQuizzes // Update cache
 
     if (typeof window !== "undefined") {
-        localStorage.setItem(QUIZZES_KEY, JSON.stringify(quizzes))
+        localStorage.setItem(QUIZZES_KEY, JSON.stringify(updatedQuizzes))
     }
 
     return newQuiz
@@ -86,13 +109,15 @@ export function updateQuiz(id: string, updates: Partial<SavedQuiz>): SavedQuiz |
 
     if (index === -1) return null
 
-    quizzes[index] = { ...quizzes[index], ...updates }
+    const updatedQuiz = { ...quizzes[index], ...updates }
+    const updatedQuizzes = quizzes.map(q => q.id === id ? updatedQuiz : q)
+    cachedQuizzes = updatedQuizzes // Update cache
 
     if (typeof window !== "undefined") {
-        localStorage.setItem(QUIZZES_KEY, JSON.stringify(quizzes))
+        localStorage.setItem(QUIZZES_KEY, JSON.stringify(updatedQuizzes))
     }
 
-    return quizzes[index]
+    return updatedQuiz
 }
 
 /**
@@ -103,6 +128,8 @@ export function deleteQuiz(id: string): boolean {
     const filtered = quizzes.filter(q => q.id !== id)
 
     if (filtered.length === quizzes.length) return false
+
+    cachedQuizzes = filtered // Update cache
 
     if (typeof window !== "undefined") {
         localStorage.setItem(QUIZZES_KEY, JSON.stringify(filtered))
