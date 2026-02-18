@@ -165,6 +165,7 @@ export default function Dashboard() {
               onClick={toggleTheme}
               className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 hover:scale-105 dark:bg-surface-dark-lighter dark:text-white dark:hover:bg-white/10"
               title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              aria-label={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               <span className="material-symbols-outlined">
                 {theme === 'dark' ? 'light_mode' : 'dark_mode'}
