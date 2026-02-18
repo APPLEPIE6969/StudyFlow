@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateTutorResponse } from "@/lib/chat";
 import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+// Input validation schema
+const tutorSchema = z.object({
+  query: z.string().min(1),
+  subject: z.string().optional(),
+  history: z.array(z.object({
+    role: z.enum(["user", "ai", "system"]),
+    content: z.string()
+  })).optional(),
+  language: z.string().optional()
+});
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -10,13 +22,16 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { query, subject, history, language } = body;
 
-    // Convert frontend history to ChatMessage format if needed, 
-    // but generateTutorResponse expects standard role/content objects which match.
-    // We just need to ensure the types align.
+    // Validate Input
+    const result = tutorSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json({ error: "Invalid input", details: result.error.format() }, { status: 400 });
+    }
 
-    // Default language to English if not provided (though frontend sends it now)
+    const { query, subject, history, language } = result.data;
+
+    // Default language to English if not provided
     const userLanguage = language || "English";
 
     const response = await generateTutorResponse(
