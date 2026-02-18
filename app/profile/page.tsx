@@ -146,6 +146,7 @@ export default function Profile() {
                       className="sr-only peer"
                       checked={theme === "dark"}
                       onChange={toggleTheme}
+                      aria-label={t("profile.theme") || "Toggle theme"}
                     />
                     <div className="w-11 h-6 bg-slate-200 dark:bg-surface-dark peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-surface-dark-lighter/50 peer-checked:bg-primary"></div>
                   </label>
@@ -289,6 +290,7 @@ export default function Profile() {
             <button
               onClick={toggleTheme}
               className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 hover:scale-105 dark:bg-surface-dark-lighter dark:text-white dark:hover:bg-surface-dark-lighter/80"
+              aria-label={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               <span className="material-symbols-outlined">{theme === "dark" ? "light_mode" : "dark_mode"}</span>
             </button>
