@@ -14,7 +14,7 @@ const limiter = rateLimit({
 const generateQuizSchema = z.object({
   topic: z.string().min(1).max(200).optional(),
   difficulty: z.enum(["Beginner", "Intermediate", "Advanced", "Expert"]).optional(),
-  type: z.enum(["Multiple Choice", "True / False", "Short Answer", "Mix of All"]).optional(),
+  type: z.enum(["Multiple Choice", "True / False", "Short Answer", "Mix of All", "Flashcards"]).optional(),
   amount: z.union([z.string(), z.number()]).optional(),
   language: z.string().max(50).optional(),
   mode: z.enum(["fast", "balanced", "smart"]).optional(),

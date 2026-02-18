@@ -146,6 +146,30 @@ function buildQuizPrompt(params: QuizGenerationParams): string {
     ? `\n\nIMPORTANT: Use ONLY the following source material to generate questions. Do not use any external knowledge:\n---\n${params.customContent}\n---\n`
     : "";
 
+  if (params.type === "Flashcards") {
+    return `You are an expert tutor. Generate a high-quality, factually accurate set of flashcards about "${params.topic}".${customContentSection}
+Difficulty: ${params.difficulty}.
+Number of Cards: ${questionCount}.
+Language: Generate all terms and definitions in ${params.language}.
+
+CRITICAL INSTRUCTIONS:
+1. For each flashcard, provide a "question" which should be the Term, and "correctAnswer" which should be its Definition.
+2. Provide 3 plausible but incorrect distractors in the "options" array, plus the correct definition.
+3. The "correctAnswer" MUST be exactly identical to one of the strings in the "options" array.
+4. Provide a clear, educational "explanation" for why the term and definition are correct.
+
+Output strictly valid JSON in the following format:
+[
+  {
+    "question": "Term here",
+    "options": ["Correct Definition", "Distractor 1", "Distractor 2", "Distractor 3"],
+    "correctAnswer": "Correct Definition",
+    "explanation": "Brief explanation of the term."
+  }
+]
+Do not include markdown code blocks. Just the raw JSON array.`;
+  }
+
   return `You are an expert tutor. Generate a high-quality, factually accurate quiz about "${params.topic}".${customContentSection}
 Difficulty: ${params.difficulty}.
 Question Type: ${params.type}.
