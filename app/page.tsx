@@ -187,9 +187,9 @@ export default function Home() {
             <span className="font-bold text-white text-lg">StudyFlow</span>
           </div>
           <div className="flex gap-8 flex-wrap justify-center">
-            <a className="hover:text-primary transition-colors" href="#">{t("common.privacy")}</a>
-            <a className="hover:text-primary transition-colors" href="#">{t("common.terms")}</a>
-            <a className="hover:text-primary transition-colors" href="#">{t("common.support")}</a>
+            <Link className="hover:text-primary transition-colors" href="/privacy">{t("common.privacy")}</Link>
+            <Link className="hover:text-primary transition-colors" href="/terms">{t("common.terms")}</Link>
+            <Link className="hover:text-primary transition-colors" href="mailto:support@studyflow.app">{t("common.support")}</Link>
           </div>
           <div>
             © 2024 StudyFlow Inc.
