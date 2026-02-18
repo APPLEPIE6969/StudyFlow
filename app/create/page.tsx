@@ -13,6 +13,7 @@ import { useLanguage } from "@/lib/i18n"
 
 import { saveQuiz, SavedQuiz } from "@/lib/quizStore"
 import { recordActivity, addXP } from "@/lib/userStore"
+import { QuizQuestion } from "@/lib/ai"
 
 
 export default function Create() {
@@ -22,22 +23,37 @@ export default function Create() {
     const [title, setTitle] = useState("")
     const [topic, setTopic] = useState("")
     const [isGenerating, setIsGenerating] = useState(false)
-    const [generatedTerms, setGeneratedTerms] = useState<Array<{ term: string, definition: string }>>([])
+    const [generatedTerms, setGeneratedTerms] = useState<Array<QuizQuestion>>([])
     const [manualTerms, setManualTerms] = useState([{ term: "", definition: "" }, { term: "", definition: "" }])
 
-    const handleGenerate = () => {
+    const handleGenerate = async () => {
+        if (!topic) return;
         setIsGenerating(true)
-        // Mock API call
-        setTimeout(() => {
-            setGeneratedTerms([
-                { term: "Artificial Intelligence", definition: "Simulation of human intelligence by machines." },
-                { term: "Machine Learning", definition: "Subset of AI that trains machines to learn from data." },
-                { term: "Neural Networks", definition: "Computing systems inspired by biological neural networks." },
-                { term: "Deep Learning", definition: "ML based on artificial neural networks with representation learning." },
-                { term: "NLP", definition: "Natural Language Processing, giving computers the ability to understand text and spoken words." },
-            ])
+        try {
+            const response = await fetch("/api/quiz/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    topic,
+                    type: "Flashcards",
+                    amount: 5,
+                    language: "English", // Default, could be synced with app language
+                    mode: "balanced",
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to generate flashcards");
+            }
+
+            const data = await response.json();
+            setGeneratedTerms(data.quiz);
+        } catch (error) {
+            console.error("Generation error:", error);
+            alert("Failed to generate flashcards. Please try again.");
+        } finally {
             setIsGenerating(false)
-        }, 2000)
+        }
     }
 
     const handleSave = () => {
@@ -49,10 +65,10 @@ export default function Create() {
         const questions = activeTab === "ai"
             ? generatedTerms.map((t, i) => ({
                 id: `q-${i}`,
-                question: `What is ${t.term}?`,
-                options: [t.definition, "Incorrect A", "Incorrect B", "Incorrect C"], // Mock options
-                correctAnswer: t.definition,
-                explanation: t.definition
+                question: t.question,
+                options: t.options,
+                correctAnswer: t.correctAnswer,
+                explanation: t.explanation
             }))
             : manualTerms.filter(t => t.term && t.definition).map((t, i) => ({
                 id: `q-${i}`,
@@ -223,9 +239,9 @@ export default function Create() {
                                                         transition={{ delay: i * 0.05 }}
                                                         className="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark-lighter flex flex-col md:flex-row gap-4 hover:border-primary/50 transition-colors shadow-sm"
                                                     >
-                                                        <div className="flex-1 font-bold text-lg text-slate-900 dark:text-white">{item.term}</div>
+                                                        <div className="flex-1 font-bold text-lg text-slate-900 dark:text-white">{item.question}</div>
                                                         <div className="hidden md:block w-px bg-slate-200 dark:bg-slate-700 self-stretch" />
-                                                        <div className="flex-1 text-slate-600 dark:text-slate-400">{item.definition}</div>
+                                                        <div className="flex-1 text-slate-600 dark:text-slate-400">{item.correctAnswer}</div>
                                                     </motion.div>
                                                 ))}
                                             </div>
