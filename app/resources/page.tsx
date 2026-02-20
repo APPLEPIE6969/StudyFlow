@@ -46,7 +46,7 @@ const resources = [
 export default function Resources() {
   const { t } = useLanguage()
   return (
-    <div className="flex min-h-screen w-full bg-slate-50 dark:bg-background-dark">
+    <div className="flex min-h-screen w-full bg-background-light dark:bg-background-dark">
       <Sidebar />
       <main className="flex-1 p-8">
         <div className="max-w-4xl mx-auto w-full">

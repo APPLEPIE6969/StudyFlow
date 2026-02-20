@@ -120,7 +120,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-slate-50 dark:bg-background-dark">
+    <div className="flex h-screen w-full overflow-hidden bg-background-light dark:bg-background-dark">
       {/* Tutorial Overlay */}
       {showTutorial && session?.user?.email && (
         <TutorialOverlay
@@ -133,7 +133,7 @@ export default function Dashboard() {
 
 
       {/* Main Content */}
-      <main className="flex flex-1 flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark">
+      <main className="flex flex-1 flex-col overflow-y-auto bg-background-light dark:bg-background-dark">
         {/* Floating Header */}
         <header className="sticky top-4 z-20 mx-4 mb-4 flex h-16 items-center justify-between rounded-2xl border border-slate-200 bg-white/80 px-6 backdrop-blur-md shadow-sm dark:border-white/5 dark:bg-[#131118]/80 transition-all">
           <div className="flex items-center gap-4 md:hidden">
