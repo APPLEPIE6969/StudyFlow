@@ -1,0 +1,50 @@
+
+> study-app@0.1.0 start /app
+> next start
+
+▲ Next.js 16.1.6
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 710ms
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)
+[31m[auth][error][0m UntrustedHost: Host must be trusted. URL was: http://localhost:3000/api/auth/session. Read more at https://errors.authjs.dev#untrustedhost
+    at /app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:51290
+    at aS (/app/.next/server/chunks/[root-of-the-server]__d4df923b._.js:404:53956)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async rW.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20169)

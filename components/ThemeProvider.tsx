@@ -27,6 +27,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         } else {
             setThemeState("light")
         }
+
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+        const handleChange = (e: MediaQueryListEvent) => {
+            if (!localStorage.getItem("theme")) {
+                setThemeState(e.matches ? "dark" : "light")
+            }
+        }
+        mediaQuery.addEventListener("change", handleChange)
+        return () => mediaQuery.removeEventListener("change", handleChange)
     }, [])
 
     // Apply theme class to document
@@ -36,15 +45,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const root = window.document.documentElement
         root.classList.remove("light", "dark")
         root.classList.add(theme)
-        localStorage.setItem("theme", theme)
     }, [theme, mounted])
 
     const toggleTheme = () => {
-        setThemeState((prev) => (prev === "dark" ? "light" : "dark"))
+        const next = theme === "dark" ? "light" : "dark"
+        setThemeState(next)
+        localStorage.setItem("theme", next)
     }
 
     const setTheme = (newTheme: Theme) => {
         setThemeState(newTheme)
+        localStorage.setItem("theme", newTheme)
     }
 
     // Prevent flash of incorrect theme
