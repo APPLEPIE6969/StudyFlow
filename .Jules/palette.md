@@ -1,0 +1,3 @@
+## 2025-05-27 - [FOUC Prevention in Next.js + Tailwind Dark Mode]
+**Learning:** Tailwind CSS class-based dark mode (`darkMode: 'class'`) requires adding the `dark` class to `document.documentElement` *before* hydration to prevent a Flash of Unstyled Content (FOUC). Relying solely on `useEffect` causes a visible flicker because the effect runs after the initial render.
+**Action:** Always inject a small inline script in `<head>` (using `dangerouslySetInnerHTML` in Next.js `layout.tsx`) to check `localStorage` and `prefers-color-scheme` immediately. Also, add `suppressHydrationWarning` to the `<html>` tag to avoid hydration mismatch warnings.
