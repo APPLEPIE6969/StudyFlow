@@ -63,7 +63,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, mounted } = useTheme()
 
   // Check authentication and onboarding
   useEffect(() => {
@@ -167,7 +167,7 @@ export default function Dashboard() {
               title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-              <span className="material-symbols-outlined">
+              <span className={`material-symbols-outlined ${!mounted ? 'invisible' : ''}`}>
                 {theme === 'dark' ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
