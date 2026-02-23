@@ -27,7 +27,7 @@ export function Sidebar() {
   const { data: session } = useSession()
   const userProfile = getUserProfile()
   const { t } = useLanguage()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, toggleTheme, mounted } = useTheme()
 
   return (
     <aside className="hidden w-64 flex-col border-r border-gray-200 bg-white dark:border-surface-dark-lighter/50 dark:bg-surface-dark md:flex h-screen sticky top-0">
@@ -80,10 +80,10 @@ export function Sidebar() {
             onClick={toggleTheme}
             className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-text-secondary dark:hover:bg-surface-dark-lighter dark:hover:text-white transition-colors w-full text-left"
           >
-            <span className="material-symbols-outlined">
+            <span className={`material-symbols-outlined ${!mounted ? 'invisible' : ''}`}>
               {theme === 'dark' ? 'light_mode' : 'dark_mode'}
             </span>
-            <span className="text-sm font-medium">
+            <span className={`text-sm font-medium ${!mounted ? 'invisible' : ''}`}>
               {theme === 'dark' ? (t("theme.light") || "Light Mode") : (t("theme.dark") || "Dark Mode")}
             </span>
           </button>
