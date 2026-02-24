@@ -1,0 +1,3 @@
+## 2024-05-21 - [Theme Switching Robustness]
+**Learning:** Using Tailwind utility classes like `dark:bg-black` for the root body background can be fragile if the dark mode toggle mechanism or configuration (`darkMode: "class"`) has subtle mismatches. Using CSS variables (`bg-[var(--background)]`) that are scoped in `:root` and `.dark` blocks is more robust because it relies on standard CSS inheritance, ensuring the background color always matches the active theme class on the document root. Also, adding `color-scheme: dark` is critical for native UI elements (scrollbars) to match.
+**Action:** When implementing dark mode, always define `color-scheme` in CSS and prefer CSS variables for the main background to avoid "flash" or mismatch issues.

@@ -78,6 +78,7 @@ export function Sidebar() {
 
           <button
             onClick={toggleTheme}
+            aria-label="Toggle theme"
             className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-text-secondary dark:hover:bg-surface-dark-lighter dark:hover:text-white transition-colors w-full text-left"
           >
             <span className={`material-symbols-outlined ${!mounted ? 'invisible' : ''}`}>
