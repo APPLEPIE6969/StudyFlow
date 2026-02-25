@@ -1,0 +1,47 @@
+
+> study-app@0.1.0 dev /app
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 1528ms
+○ Compiling /login ...
+ GET /login 200 in 4.7s (compile: 4.1s, proxy.ts: 106ms, render: 590ms)
+ GET /api/auth/session 200 in 2.7s
+ GET /login 200 in 161ms (compile: 8ms, proxy.ts: 10ms, render: 143ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:5330:264)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async AppRouteRouteModule.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:5330:264)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async AppRouteRouteModule.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 264ms (compile: 202ms, render: 62ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:5330:264)
+    at async AppRouteRouteModule.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 49ms (compile: 37ms, render: 12ms)
+ GET /login 200 in 229ms (compile: 91ms, proxy.ts: 8ms, render: 129ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:5330:264)
+    at async AppRouteRouteModule.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 40ms (compile: 31ms, render: 9ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/691c0_@auth_core_0aa276b9._.js:5330:264)
+    at async AppRouteRouteModule.do (/app/node_modules/.pnpm/next@16.1.6_@babel+core@7.29.0_react-dom@19.2.3_react@19.2.3__react@19.2.3/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 17ms (compile: 7ms, render: 9ms)
