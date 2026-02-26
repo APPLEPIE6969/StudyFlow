@@ -1,15 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Groq from "groq-sdk";
-import { TEXT_MODELS } from "./ai";
+import { TEXT_MODELS, ChatMessage } from "./ai";
 
 // Initialize clients
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_key" });
-
-export interface ChatMessage {
-    role: "user" | "ai" | "system";
-    content: string;
-}
 
 const SYSTEM_PROMPT_TEMPLATE = `You are a helpful and friendly AI Tutor specializing in {subject}.
 Your goal is to help the student learn by explaining concepts clearly, asking guiding questions, and providing examples.
