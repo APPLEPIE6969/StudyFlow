@@ -1,6 +1,6 @@
 "use client"
 
-import { QuizQuestion } from "./ai"
+import type { QuizQuestion } from "./ai"
 
 // In-memory cache for quizzes to avoid frequent localStorage access and JSON parsing
 let cachedQuizzes: SavedQuiz[] | null = null
@@ -139,18 +139,33 @@ export function deleteQuiz(id: string): boolean {
 }
 
 /**
+ * Calculate statistics from a list of quizzes
+ * Extracted for performance optimization (Loop Fusion)
+ */
+export function calculateQuizStats(quizzes: SavedQuiz[]) {
+    let completedCount = 0
+    let totalScore = 0
+    let totalQuestions = 0
+
+    for (const q of quizzes) {
+        if (q.completedAt) {
+            completedCount++
+            totalScore += (q.score || 0)
+            totalQuestions += q.totalQuestions
+        }
+    }
+
+    return {
+        totalQuizzes: quizzes.length,
+        completedQuizzes: completedCount,
+        averageScore: totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0,
+    }
+}
+
+/**
  * Get quiz statistics
  */
 export function getQuizStats() {
     const quizzes = getUserQuizzes()
-    const completed = quizzes.filter(q => q.completedAt)
-
-    const totalScore = completed.reduce((sum, q) => sum + (q.score || 0), 0)
-    const totalQuestions = completed.reduce((sum, q) => sum + q.totalQuestions, 0)
-
-    return {
-        totalQuizzes: quizzes.length,
-        completedQuizzes: completed.length,
-        averageScore: totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0,
-    }
+    return calculateQuizStats(quizzes)
 }
