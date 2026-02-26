@@ -13,12 +13,14 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_key" });
 // All available text generation models for quiz generation
 export const TEXT_MODELS = {
   // Gemini Models (ordered by capability)
-  GEMINI_FLASH_25: { provider: "gemini" as const, model: "gemini-2.5-flash" },
   GEMINI_FLASH_3: { provider: "gemini" as const, model: "gemini-3-flash-preview" },
+  GEMINI_FLASH_25: { provider: "gemini" as const, model: "gemini-2.5-flash" },
   GEMINI_FLASH_LITE: { provider: "gemini" as const, model: "gemini-2.5-flash-lite" },
   GEMMA_27B: { provider: "gemini" as const, model: "gemma-3-27b" },
   GEMMA_12B: { provider: "gemini" as const, model: "gemma-3-12b" },
+  GEMMA_7B: { provider: "gemini" as const, model: "gemma-3-7b" },
   GEMMA_4B: { provider: "gemini" as const, model: "gemma-3-4b" },
+  GEMMA_2B: { provider: "gemini" as const, model: "gemma-3-2b" },
   GEMMA_1B: { provider: "gemini" as const, model: "gemma-3-1b" },
 
   // Groq Models (ordered by capability)
@@ -72,8 +74,8 @@ type ModelEntry = { provider: "groq" | "gemini"; model: string };
 const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
   // Smart: Start with best Gemini, fall through all models
   smart: [
-    TEXT_MODELS.GEMINI_FLASH_25,
     TEXT_MODELS.GEMINI_FLASH_3,
+    TEXT_MODELS.GEMINI_FLASH_25,
     TEXT_MODELS.GPT_OSS_120B,
     TEXT_MODELS.LLAMA_70B,
     TEXT_MODELS.QWEN_32B,
@@ -83,10 +85,12 @@ const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
     TEXT_MODELS.LLAMA_4_MAVERICK,
     TEXT_MODELS.LLAMA_4_SCOUT,
     TEXT_MODELS.GEMMA_12B,
+    TEXT_MODELS.GEMMA_7B,
     TEXT_MODELS.GEMINI_FLASH_LITE,
     TEXT_MODELS.COMPOUND,
     TEXT_MODELS.COMPOUND_MINI,
     TEXT_MODELS.GEMMA_4B,
+    TEXT_MODELS.GEMMA_2B,
     TEXT_MODELS.LLAMA_8B,
     TEXT_MODELS.GEMMA_1B,
   ],
@@ -103,7 +107,9 @@ const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
     TEXT_MODELS.COMPOUND,
     TEXT_MODELS.COMPOUND_MINI,
     TEXT_MODELS.GEMMA_12B,
+    TEXT_MODELS.GEMMA_7B,
     TEXT_MODELS.GEMMA_4B,
+    TEXT_MODELS.GEMMA_2B,
     TEXT_MODELS.LLAMA_8B,
     TEXT_MODELS.GEMMA_1B,
   ],
@@ -114,6 +120,7 @@ const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
     TEXT_MODELS.LLAMA_8B,
     TEXT_MODELS.COMPOUND_MINI,
     TEXT_MODELS.GEMMA_4B,
+    TEXT_MODELS.GEMMA_2B,
     TEXT_MODELS.GEMMA_1B,
   ],
 };
