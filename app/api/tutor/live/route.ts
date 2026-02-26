@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { genAI } from "@/lib/ai";
 
 // Ensure this runs on the edge or Node, but for file handling Node is often safer with Next.js depending on config.
 // Using standard Node runtime for now.
@@ -19,8 +19,6 @@ export async function POST(req: NextRequest) {
         // Convert Blob to ArrayBuffer then to Base64
         const arrayBuffer = await audioFile.arrayBuffer();
         const base64Audio = Buffer.from(arrayBuffer).toString("base64");
-
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
         // 1. Try Native Audio Model
         try {
