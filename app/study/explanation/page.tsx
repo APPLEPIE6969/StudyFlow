@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
+
 import { useState, useEffect, useRef } from "react"
 import { Sidebar } from "@/components/Sidebar"
-import { getUserProfile } from "@/lib/userStore"
+
 import { useLanguage } from "@/lib/i18n"
 import { VoiceInput } from "@/components/VoiceInput"
 import { Select } from "@/components/ui/Select"
@@ -71,7 +71,7 @@ export default function SmartExplanation() {
         body: JSON.stringify({
           query: userMessage,
           subject: selectedSubject.name,
-          history: chatHistory.slice(-6) // Send last 6 messages for context
+          history: newHistory.slice(-7) // Send recent history including current message
         })
       });
 
@@ -180,7 +180,7 @@ export default function SmartExplanation() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
                 <button onClick={() => setQuery("Explain Quantum Physics like I'm 5")} className="p-4 rounded-xl bg-white dark:bg-[#1e182a] border border-slate-200 dark:border-surface-dark-lighter hover:border-primary/50 text-left transition-all group">
                   <span className="text-sm font-semibold text-slate-900 dark:text-white block mb-1 group-hover:text-primary">Explain Quantum Physics</span>
-                  <span className="text-xs text-slate-500 dark:text-text-secondary">Like I'm 5 years old</span>
+                  <span className="text-xs text-slate-500 dark:text-text-secondary">Like I&apos;m 5 years old</span>
                 </button>
                 <button onClick={() => setQuery("Give me a practice math problem")} className="p-4 rounded-xl bg-white dark:bg-[#1e182a] border border-slate-200 dark:border-surface-dark-lighter hover:border-primary/50 text-left transition-all group">
                   <span className="text-sm font-semibold text-slate-900 dark:text-white block mb-1 group-hover:text-primary">Practice Problem</span>
@@ -207,13 +207,13 @@ export default function SmartExplanation() {
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          table: ({ node, ...props }) => <div className="overflow-x-auto my-4"><table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700 border dark:border-slate-700" {...props} /></div>,
-                          th: ({ node, ...props }) => <th className="px-3 py-2 bg-slate-50 dark:bg-slate-800/50 text-left text-xs font-semibold uppercase tracking-wider" {...props} />,
-                          td: ({ node, ...props }) => <td className="px-3 py-2 whitespace-nowrap border-t dark:border-slate-700" {...props} />,
-                          ul: ({ node, ...props }) => <ul className="list-disc pl-5 space-y-1 my-2" {...props} />,
-                          ol: ({ node, ...props }) => <ol className="list-decimal pl-5 space-y-1 my-2" {...props} />,
-                          code: ({ node, ...props }) => <code className="bg-slate-100 dark:bg-slate-800 px-1 rounded font-mono text-sm" {...props} />,
-                          a: ({ node, ...props }) => <a className="text-primary hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                          table: ({ ...props }) => <div className="overflow-x-auto my-4"><table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700 border dark:border-slate-700" {...props} /></div>,
+                          th: ({ ...props }) => <th className="px-3 py-2 bg-slate-50 dark:bg-slate-800/50 text-left text-xs font-semibold uppercase tracking-wider" {...props} />,
+                          td: ({ ...props }) => <td className="px-3 py-2 whitespace-nowrap border-t dark:border-slate-700" {...props} />,
+                          ul: ({ ...props }) => <ul className="list-disc pl-5 space-y-1 my-2" {...props} />,
+                          ol: ({ ...props }) => <ol className="list-decimal pl-5 space-y-1 my-2" {...props} />,
+                          code: ({ ...props }) => <code className="bg-slate-100 dark:bg-slate-800 px-1 rounded font-mono text-sm" {...props} />,
+                          a: ({ ...props }) => <a className="text-primary hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
                         }}
                       >
                         {msg.content}
