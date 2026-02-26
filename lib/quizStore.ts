@@ -1,6 +1,6 @@
 "use client"
 
-import { QuizQuestion } from "./ai"
+import type { QuizQuestion } from "./types"
 
 // In-memory cache for quizzes to avoid frequent localStorage access and JSON parsing
 let cachedQuizzes: SavedQuiz[] | null = null
@@ -86,7 +86,7 @@ export function saveQuiz(quiz: Omit<SavedQuiz, "id" | "createdAt">): SavedQuiz {
 
     const newQuiz: SavedQuiz = {
         ...quiz,
-        id: `quiz_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `quiz_${crypto.randomUUID()}`,
         createdAt: new Date().toISOString(),
     }
 
