@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { getUserProfile } from "@/lib/userStore"
@@ -91,8 +92,13 @@ export function Sidebar() {
           <div className="mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-surface-dark-lighter/50 dark:bg-surface-dark-lighter">
             <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
               {session?.user?.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={session.user.image} alt={session.user.name || "User"} className="h-full w-full object-cover" />
+                <Image
+                  src={session.user.image}
+                  alt={session.user.name || "User"}
+                  width={40}
+                  height={40}
+                  className="object-cover"
+                />
               ) : (
                 <div className="h-full w-full bg-gradient-to-br from-primary to-purple-400"></div>
               )}
