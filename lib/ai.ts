@@ -194,13 +194,17 @@ Output strictly valid JSON in the following format:
 Do not include markdown code blocks. Just the raw JSON array.`;
 }
 
+export function parseJSONFromAI(text: string): any {
+  const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+  return JSON.parse(cleanedText);
+}
+
 async function generateWithGemini(prompt: string, modelName: string): Promise<QuizQuestion[]> {
   const model = genAI.getGenerativeModel({ model: modelName });
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const text = response.text();
-  const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-  return JSON.parse(cleanedText);
+  return parseJSONFromAI(text);
 }
 
 async function generateWithGroq(prompt: string, modelName: string): Promise<QuizQuestion[]> {
@@ -211,8 +215,7 @@ async function generateWithGroq(prompt: string, modelName: string): Promise<Quiz
   });
 
   const text = completion.choices[0]?.message?.content || "[]";
-  const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-  return JSON.parse(cleanedText);
+  return parseJSONFromAI(text);
 }
 
 /**
