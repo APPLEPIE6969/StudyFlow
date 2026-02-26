@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { getUserProfile } from "./userStore"
 import { LANGUAGES } from "./constants"
+import { translate } from "./i18n-utils"
 
 type Language = string
 
@@ -839,15 +840,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
 
     const t = (key: string, ...args: any[]) => {
-        const dict = translations[language] || translations["English"]
-        let text = dict[key] || key
-
-        if (args.length > 0) {
-            args.forEach((arg, index) => {
-                text = text.replace(new RegExp(`\\{${index}\\}`, 'g'), String(arg))
-            })
-        }
-        return text
+        return translate(translations, language, key, ...args)
     }
 
     return (
