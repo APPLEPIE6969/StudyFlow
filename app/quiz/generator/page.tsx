@@ -111,6 +111,7 @@ export default function QuizGenerator() {
         aiMode: data.settings.aiMode,
         instantFeedback,
         questions: data.quiz,
+        signature: data.signature,
         totalQuestions: data.quiz.length,
       });
 

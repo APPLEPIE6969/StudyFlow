@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateQuiz, AIMode, QuizGenerationParams } from "@/lib/ai";
 import { auth } from "@/lib/auth";
+import { signData } from "@/lib/security";
 import { z } from "zod";
 import { rateLimit } from "@/lib/ratelimit";
 
@@ -74,6 +75,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       quiz: questions,
+      signature: signData(questions),
       settings: {
         topic,
         difficulty,

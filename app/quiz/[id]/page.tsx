@@ -87,20 +87,44 @@ export default function QuizInterface({ params }: { params: Promise<{ id: string
     }
   };
 
-  const finishQuiz = () => {
+  const finishQuiz = async () => {
     // Update quiz with completion data
     if (quiz) {
+      let xpReward = (score * 20) + 10;
+      let finalScore = score;
+
+      try {
+        const response = await fetch("/api/quiz/score", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            questions: quiz.questions,
+            answers: answers,
+            signature: quiz.signature,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          xpReward = data.xpReward;
+          finalScore = data.score;
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          console.error("Verification failed:", errorData.error || "Unknown error");
+          xpReward = 0; // Strict: no XP if verification fails
+        }
+      } catch (error) {
+        console.error("Error verifying score:", error);
+      }
+
       updateQuiz(quiz.id, {
         completedAt: new Date().toISOString(),
-        score: score,
+        score: finalScore,
       });
 
       // Record activity for streak
       recordActivity();
 
-      // Calculate XP Reward: (Correct * 20) + 10 bonus for completion
-      // Incorrect answers do NOT give XP
-      const xpReward = (score * 20) + 10;
       addXP(xpReward);
 
       // Update total quizzes and accuracy in global stats
@@ -109,7 +133,7 @@ export default function QuizInterface({ params }: { params: Promise<{ id: string
         const totalQuizzes = profile.stats.totalQuizzes + 1;
         // Simple running average for accuracy
         const currentAccuracy = profile.stats.accuracyScore || 0;
-        const newAccuracy = Math.round((currentAccuracy * profile.stats.totalQuizzes + (score / quizQuestions.length * 100)) / totalQuizzes);
+        const newAccuracy = Math.round((currentAccuracy * profile.stats.totalQuizzes + (finalScore / quizQuestions.length * 100)) / totalQuizzes);
 
         // Record study time: 0.5 mins per question
         const currentHours = profile.stats.hoursStudied || 0;
@@ -121,7 +145,7 @@ export default function QuizInterface({ params }: { params: Promise<{ id: string
           hoursStudied: parseFloat((currentHours + additionalHours).toFixed(2))
         });
       }
-      router.push(`/quiz/${id}/results?score=${score}&total=${quizQuestions.length}&xp=${xpReward}`);
+      router.push(`/quiz/${id}/results?score=${finalScore}&total=${quizQuestions.length}&xp=${xpReward}`);
     }
   };
 

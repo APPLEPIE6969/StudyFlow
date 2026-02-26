@@ -25,6 +25,7 @@ export interface SavedQuiz {
     aiMode: "fast" | "balanced" | "smart"
     instantFeedback: boolean
     questions: QuizQuestion[]
+    signature?: string
     createdAt: string
     completedAt?: string
     score?: number

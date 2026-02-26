@@ -24,6 +24,7 @@ export default function Create() {
     const [topic, setTopic] = useState("")
     const [isGenerating, setIsGenerating] = useState(false)
     const [generatedTerms, setGeneratedTerms] = useState<Array<QuizQuestion>>([])
+    const [generatedSignature, setGeneratedSignature] = useState<string | undefined>(undefined)
     const [manualTerms, setManualTerms] = useState([{ term: "", definition: "" }, { term: "", definition: "" }])
 
     const handleGenerate = async () => {
@@ -48,6 +49,7 @@ export default function Create() {
 
             const data = await response.json();
             setGeneratedTerms(data.quiz);
+            setGeneratedSignature(data.signature);
         } catch (error) {
             console.error("Generation error:", error);
             alert("Failed to generate flashcards. Please try again.");
@@ -56,7 +58,7 @@ export default function Create() {
         }
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!title) {
             alert(t("create.error_title"))
             return
@@ -87,6 +89,7 @@ export default function Create() {
             title: title,
             topic: topic || "Custom Set",
             questions: questions,
+            signature: activeTab === "ai" ? generatedSignature : undefined,
             score: 0,
             totalQuestions: questions.length,
             language: "English", // Default
@@ -98,9 +101,26 @@ export default function Create() {
 
         saveQuiz(newQuizData)
 
-        // Record activity and reward XP
+        // Record activity
         recordActivity();
-        addXP(30); // 30 XP for creating a study set
+
+        // Reward XP via backend
+        let xpReward = 0;
+        try {
+            const response = await fetch("/api/user/reward", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "create_set" }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                xpReward = data.xpReward;
+            }
+        } catch (error) {
+            console.error("Failed to fetch reward:", error);
+        }
+
+        addXP(xpReward);
 
         router.push("/quizzes")
     }
