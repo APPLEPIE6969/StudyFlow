@@ -245,7 +245,7 @@ export async function generateQuiz(
       console.log(`Success with ${provider}/${model}`);
       return { questions, usedMode: mode, usedModel: model };
     } catch (error) {
-      console.error(`${provider}/${model} failed:`, error);
+      console.error(`${provider}/${model} failed:`, error instanceof Error ? error.message : String(error));
       lastError = error as Error;
     }
   }
@@ -308,7 +308,7 @@ export async function chatWithTutor(message: string, subject: string, history: a
     });
     return completion.choices[0]?.message?.content || "I'm having trouble thinking of a response right now.";
   } catch (error) {
-    console.error("Groq chat failed, falling back:", error);
+    console.error("Groq chat failed, falling back:", error instanceof Error ? error.message : String(error));
     try {
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
@@ -325,7 +325,7 @@ export async function chatWithTutor(message: string, subject: string, history: a
       const result = await chat.sendMessage(message);
       return result.response.text();
     } catch (geminiError) {
-      console.error("Gemini chat failed:", geminiError);
+      console.error("Gemini chat failed:", geminiError instanceof Error ? geminiError.message : String(geminiError));
       return "Sorry, I'm unable to connect to my brain right now. Please try again later.";
     }
   }
