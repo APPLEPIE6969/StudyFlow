@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Groq from "groq-sdk";
+export type { QuizQuestion } from "./types";
 
 // Initialize clients
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
@@ -120,13 +121,6 @@ const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
 // =============================================================================
 // QUIZ GENERATION
 // =============================================================================
-
-export interface QuizQuestion {
-  question: string;
-  options: string[];
-  correctAnswer: string;
-  explanation: string;
-}
 
 export interface QuizGenerationParams {
   topic: string;

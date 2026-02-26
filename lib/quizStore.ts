@@ -1,6 +1,6 @@
 "use client"
 
-import { QuizQuestion } from "./ai"
+import type { QuizQuestion } from "./types"
 
 // In-memory cache for quizzes to avoid frequent localStorage access and JSON parsing
 let cachedQuizzes: SavedQuiz[] | null = null
