@@ -128,6 +128,11 @@ export interface QuizQuestion {
   explanation: string;
 }
 
+export interface ChatMessage {
+  role: "user" | "ai" | "system";
+  content: string;
+}
+
 export interface QuizGenerationParams {
   topic: string;
   difficulty: string;
@@ -287,7 +292,7 @@ export async function transcribeAudio(audioBase64: string): Promise<string> {
   return completion.text;
 }
 
-export async function chatWithTutor(message: string, subject: string, history: any[]): Promise<string> {
+export async function chatWithTutor(message: string, subject: string, history: ChatMessage[]): Promise<string> {
   const systemPrompt = `You are an expert ${subject} tutor. Your goal is to help the user learn by explaining concepts clearly, asking guiding questions, and providing examples.
   - Be encouraging and patient.
   - If the user asks for a solution, guide them towards it rather than just giving the answer.
@@ -295,14 +300,17 @@ export async function chatWithTutor(message: string, subject: string, history: a
   - Keep responses concise but helpful.`;
 
   const messages = [
-    { role: "system", content: systemPrompt },
-    ...history.map(msg => ({ role: msg.role, content: msg.content })),
-    { role: "user", content: message }
+    { role: "system" as const, content: systemPrompt },
+    ...history.map(msg => ({
+      role: (msg.role === "ai" ? "assistant" : msg.role) as "system" | "user" | "assistant",
+      content: msg.content
+    })),
+    { role: "user" as const, content: message }
   ];
 
   try {
     const completion = await groq.chat.completions.create({
-      messages: messages as any,
+      messages: messages,
       model: TEXT_MODELS.LLAMA_70B.model,
       temperature: 0.7,
     });
@@ -316,10 +324,12 @@ export async function chatWithTutor(message: string, subject: string, history: a
       });
 
       const chat = model.startChat({
-        history: history.map(msg => ({
-          role: msg.role === "user" ? "user" : "model",
-          parts: [{ text: msg.content }],
-        })),
+        history: history
+          .filter(msg => msg.role !== "system")
+          .map(msg => ({
+            role: msg.role === "user" ? "user" : "model",
+            parts: [{ text: msg.content }],
+          })),
       });
 
       const result = await chat.sendMessage(message);
