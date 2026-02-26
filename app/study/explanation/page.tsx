@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { useState, useEffect, useRef } from "react"
 import { Sidebar } from "@/components/Sidebar"
-import { getUserProfile } from "@/lib/userStore"
 import { useLanguage } from "@/lib/i18n"
 import { VoiceInput } from "@/components/VoiceInput"
 import { Select } from "@/components/ui/Select"

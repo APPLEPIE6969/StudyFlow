@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { getUserProfile } from "./userStore"
+import { useUserProfile } from "./userStore"
 import { LANGUAGES } from "./constants"
 
 type Language = string
@@ -823,14 +823,14 @@ const translations: Record<string, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [language, setLanguageState] = useState<Language>("English")
+    const userProfile = useUserProfile()
 
-    // Load from storage on mount
+    // Sync with user profile
     useEffect(() => {
-        const profile = getUserProfile()
-        if (profile?.language) {
-            setLanguageState(profile.language)
+        if (userProfile?.language) {
+            setLanguageState(userProfile.language)
         }
-    }, [])
+    }, [userProfile?.language])
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang)

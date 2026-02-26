@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
   isOnboardingComplete,
-  getUserProfile,
+  useUserProfile,
   isTutorialComplete,
   recordActivity,
   type UserStats
@@ -58,7 +58,8 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
+  const userProfile = useUserProfile()
+  const userStats = userProfile?.stats || defaultStats
   const [userData, setUserData] = useState<UserData>(emptyUserData)
   const [isLoading, setIsLoading] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
@@ -81,13 +82,6 @@ export default function Dashboard() {
 
       // Record today's activity
       recordActivity()
-
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
 
       // Check if tutorial should be shown
       if (!isTutorialComplete(session.user.email)) {

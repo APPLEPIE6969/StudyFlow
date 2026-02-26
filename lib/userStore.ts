@@ -1,5 +1,7 @@
 "use client"
 
+import { useSyncExternalStore } from "react"
+
 // User profile interface for localStorage-based state management
 export interface UserStats {
   totalQuizzes: number
@@ -26,6 +28,33 @@ export interface UserProfile {
 
 const STORAGE_KEY = "studyflow_user_profile"
 
+// Module-level cache to avoid redundant localStorage access and JSON parsing
+let cachedProfile: UserProfile | null = null
+let isInitialized = false
+
+// Listeners for reactive updates
+const listeners = new Set<() => void>()
+
+function subscribe(onStoreChange: () => void) {
+  listeners.add(onStoreChange)
+  return () => listeners.delete(onStoreChange)
+}
+
+function notify() {
+  listeners.forEach((listener) => listener())
+}
+
+// Sync with other tabs
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    if (event.key === STORAGE_KEY) {
+      cachedProfile = null
+      isInitialized = false
+      notify()
+    }
+  })
+}
+
 // Default stats for new users
 const defaultStats: UserStats = {
   totalQuizzes: 0,
@@ -38,18 +67,43 @@ const defaultStats: UserStats = {
 }
 
 /**
- * Get user profile from localStorage
+ * Get user profile from localStorage (with caching)
  */
 export function getUserProfile(): UserProfile | null {
   if (typeof window === "undefined") return null
 
+  if (isInitialized) {
+    return cachedProfile
+  }
+
   try {
     const data = localStorage.getItem(STORAGE_KEY)
-    if (!data) return null
-    return JSON.parse(data) as UserProfile
+    if (!data) {
+      cachedProfile = null
+      isInitialized = true
+      return null
+    }
+    cachedProfile = JSON.parse(data) as UserProfile
+    isInitialized = true
+    return cachedProfile
   } catch {
+    cachedProfile = null
+    isInitialized = true
     return null
   }
+}
+
+const getServerSnapshot = () => null
+
+/**
+ * Reactive hook for user profile using useSyncExternalStore
+ */
+export function useUserProfile() {
+  return useSyncExternalStore(
+    subscribe,
+    getUserProfile,
+    getServerSnapshot
+  )
 }
 
 /**
@@ -73,6 +127,9 @@ export function saveUserProfile(profile: Partial<UserProfile> & { email: string 
 
   if (typeof window !== "undefined") {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile))
+    cachedProfile = newProfile
+    isInitialized = true
+    notify()
   }
 
   return newProfile
@@ -84,6 +141,9 @@ export function saveUserProfile(profile: Partial<UserProfile> & { email: string 
 export function clearUserProfile(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(STORAGE_KEY)
+    cachedProfile = null
+    isInitialized = true
+    notify()
   }
 }
 
@@ -107,8 +167,11 @@ export function updateUserStats(stats: Partial<UserStats>): void {
   const profile = getUserProfile()
   if (!profile) return
 
-  profile.stats = { ...profile.stats, ...stats }
-  saveUserProfile(profile)
+  const updatedProfile = {
+    ...profile,
+    stats: { ...profile.stats, ...stats }
+  }
+  saveUserProfile(updatedProfile)
 }
 
 /**
@@ -150,8 +213,7 @@ export function addXP(amount: number): void {
     stats.xpToNextLevel = stats.currentLevel * 100
   }
 
-  profile.stats = stats
-  saveUserProfile(profile)
+  saveUserProfile({ ...profile, stats })
 }
 
 /**
@@ -186,8 +248,9 @@ export function recordActivity(): void {
     stats.dailyStreak = 1
   }
 
-  profile.lastActivityDate = today
-  profile.stats = stats
-  saveUserProfile(profile)
+  saveUserProfile({
+    ...profile,
+    lastActivityDate: today,
+    stats
+  })
 }
-

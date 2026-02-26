@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { getUserProfile } from "@/lib/userStore"
+import { useUserProfile } from "@/lib/userStore"
 
 import { useLanguage } from "@/lib/i18n"
 
@@ -25,7 +25,7 @@ const settingsItems = [
 export function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const userProfile = getUserProfile()
+  const userProfile = useUserProfile()
   const { t } = useLanguage()
   const { theme, toggleTheme, mounted } = useTheme()
 

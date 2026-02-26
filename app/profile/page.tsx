@@ -3,7 +3,7 @@
 import { Sidebar } from "@/components/Sidebar"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
-import { getUserProfile, saveUserProfile } from "@/lib/userStore"
+import { useUserProfile, saveUserProfile } from "@/lib/userStore"
 import { EmptyState } from "@/components/EmptyState"
 import { Select } from "@/components/ui/Select"
 import { useState, useEffect } from "react"
@@ -17,7 +17,7 @@ import { useTheme } from "@/components/ThemeProvider"
 export default function Profile() {
   const { data: session } = useSession()
   const router = useRouter()
-  const userProfile = getUserProfile()
+  const userProfile = useUserProfile()
   const { language, setLanguage, t } = useLanguage()
   const { theme, toggleTheme } = useTheme()
 
