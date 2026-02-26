@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, memo } from "react"
 import { Sidebar } from "@/components/Sidebar"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -25,6 +25,18 @@ export default function Create() {
     const [isGenerating, setIsGenerating] = useState(false)
     const [generatedTerms, setGeneratedTerms] = useState<Array<QuizQuestion>>([])
     const [manualTerms, setManualTerms] = useState([{ term: "", definition: "" }, { term: "", definition: "" }])
+    const handleUpdateTerm = useCallback((index: number, field: "term" | "definition", value: string) => {
+        setManualTerms(prev => {
+            const newTerms = [...prev]
+            newTerms[index] = { ...newTerms[index], [field]: value }
+            return newTerms
+        })
+    }, [])
+
+    const handleDeleteTerm = useCallback((index: number) => {
+        setManualTerms(prev => prev.filter((_, idx) => idx !== index))
+    }, [])
+
 
     const handleGenerate = async () => {
         if (!topic) return;
@@ -266,52 +278,14 @@ export default function Create() {
                                 >
                                     <div className="space-y-4">
                                         {manualTerms.map((item, i) => (
-                                            <motion.div
+                                            <ManualTermItem
                                                 key={i}
-                                                initial={{ opacity: 0, y: 10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: i * 0.05 }}
-                                            >
-                                                <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark-lighter shadow-sm overflow-visible">
-                                                    <CardContent className="p-4 flex gap-4 items-start pt-6">
-                                                        <div className="flex-none pt-4 text-slate-400 font-mono text-sm w-8 text-center bg-slate-100 dark:bg-slate-800 rounded-lg py-1">
-                                                            {i + 1}
-                                                        </div>
-                                                        <div className="flex-1 space-y-2">
-                                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("create.term_label")}</label>
-                                                            <Input
-                                                                value={item.term}
-                                                                className="border-b-2 border-x-0 border-t-0 rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-lg bg-transparent border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                                                                placeholder={t("create.term_placeholder")}
-                                                                onChange={(e) => {
-                                                                    const newTerms = [...manualTerms]
-                                                                    newTerms[i].term = e.target.value
-                                                                    setManualTerms(newTerms)
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <div className="flex-1 space-y-2">
-                                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("create.definition_label")}</label>
-                                                            <Input
-                                                                value={item.definition}
-                                                                className="border-b-2 border-x-0 border-t-0 rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-lg bg-transparent border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
-                                                                placeholder={t("create.definition_placeholder")}
-                                                                onChange={(e) => {
-                                                                    const newTerms = [...manualTerms]
-                                                                    newTerms[i].definition = e.target.value
-                                                                    setManualTerms(newTerms)
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <Button variant="ghost" size="icon" className="mt-4 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" onClick={() => {
-                                                            const newTerms = manualTerms.filter((_, idx) => idx !== i)
-                                                            setManualTerms(newTerms)
-                                                        }}>
-                                                            <Trash2 className="h-5 w-5" />
-                                                        </Button>
-                                                    </CardContent>
-                                                </Card>
-                                            </motion.div>
+                                                item={item}
+                                                index={i}
+                                                onUpdate={handleUpdateTerm}
+                                                onDelete={handleDeleteTerm}
+                                                t={t}
+                                            />
                                         ))}
                                         <Button variant="outline" className="w-full py-8 border-dashed border-2 hover:border-primary hover:text-primary transition-all text-slate-500 text-lg rounded-xl dark:border-slate-700 dark:hover:border-primary" onClick={addManualTerm}>
                                             <Plus className="mr-2 h-5 w-5" />
@@ -332,3 +306,57 @@ export default function Create() {
         </div>
     )
 }
+
+
+const ManualTermItem = memo(({
+    item,
+    index,
+    onUpdate,
+    onDelete,
+    t
+}: {
+    item: { term: string; definition: string };
+    index: number;
+    onUpdate: (index: number, field: "term" | "definition", value: string) => void;
+    onDelete: (index: number) => void;
+    t: (key: string, ...args: any[]) => string;
+}) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+        >
+            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark-lighter shadow-sm overflow-visible">
+                <CardContent className="p-4 flex gap-4 items-start pt-6">
+                    <div className="flex-none pt-4 text-slate-400 font-mono text-sm w-8 text-center bg-slate-100 dark:bg-slate-800 rounded-lg py-1">
+                        {index + 1}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("create.term_label")}</label>
+                        <Input
+                            value={item.term}
+                            className="border-b-2 border-x-0 border-t-0 rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-lg bg-transparent border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                            placeholder={t("create.term_placeholder")}
+                            onChange={(e) => onUpdate(index, "term", e.target.value)}
+                        />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t("create.definition_label")}</label>
+                        <Input
+                            value={item.definition}
+                            className="border-b-2 border-x-0 border-t-0 rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-lg bg-transparent border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                            placeholder={t("create.definition_placeholder")}
+                            onChange={(e) => onUpdate(index, "definition", e.target.value)}
+                        />
+                    </div>
+                    <Button variant="ghost" size="icon" className="mt-4 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" onClick={() => onDelete(index)}>
+                        <Trash2 className="h-5 w-5" />
+                    </Button>
+                </CardContent>
+            </Card>
+        </motion.div>
+    )
+})
+
+ManualTermItem.displayName = "ManualTermItem"
