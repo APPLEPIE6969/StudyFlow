@@ -134,7 +134,13 @@ export function markTutorialComplete(email: string): void {
 }
 
 /**
- * Add XP and handle level ups
+ * Add XP and handle level ups.
+ *
+ * SECURITY NOTE: This function updates the client-side localStorage.
+ * While we now use backend verification to calculate the reward 'amount',
+ * the final state is still stored in localStorage which can be manipulated
+ * by the user. A full security fix requires moving the UserProfile to a
+ * server-side database.
  */
 export function addXP(amount: number): void {
   const profile = getUserProfile()
