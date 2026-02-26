@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
                 const { generateTutorResponse } = await import("@/lib/chat");
 
                 // Transcribe
-                const transcription = await transcribeAudio(base64Audio); // Note: transcribeAudio expects base64 string? lib/ai says it takes base64.
+                const transcription = await transcribeAudio(base64Audio);
 
                 if (!transcription) throw new Error("Transcription failed");
 
