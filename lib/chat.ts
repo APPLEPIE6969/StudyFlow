@@ -30,6 +30,16 @@ export async function generateTutorResponse(
         .replace("{subject}", subject)
         .replace("{language}", language);
 
+    // Filter out system messages first as we handle system prompt separately
+    let validHistory = history.filter(h => h.role !== 'system');
+
+    // DEDUPLICATION FIX:
+    // If the last message in history is the same as the current query, remove it.
+    // This prevents duplication since we always append the current query to the prompt.
+    if (validHistory.length > 0 && validHistory[validHistory.length - 1].content === message) {
+        validHistory = validHistory.slice(0, -1);
+    }
+
     // 1. Try Gemini 2.5 Flash (Best balance of speed and smarts)
     try {
         console.log("Attempting Gemini 2.5 Flash...");
@@ -39,7 +49,7 @@ export async function generateTutorResponse(
         });
 
         const chat = model.startChat({
-            history: history.filter(h => h.role !== 'system').map(msg => ({
+            history: validHistory.map(msg => ({
                 role: msg.role === "user" ? "user" : "model",
                 parts: [{ text: msg.content }],
             })),
@@ -61,7 +71,7 @@ export async function generateTutorResponse(
         });
 
         const chat = model.startChat({
-            history: history.filter(h => h.role !== 'system').map(msg => ({
+            history: validHistory.map(msg => ({
                 role: msg.role === "user" ? "user" : "model",
                 parts: [{ text: msg.content }],
             })),
@@ -80,8 +90,8 @@ export async function generateTutorResponse(
         const completion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
-                ...history.filter(h => h.role !== 'system').map(h => ({
-                    role: h.role === "ai" ? "assistant" : "user" as any,
+                ...validHistory.map(h => ({
+                    role: h.role === "ai" ? "assistant" : "user" as any ,// eslint-disable-line @typescript-eslint/no-explicit-any
                     content: h.content
                 })),
                 { role: "user", content: message }
@@ -102,7 +112,10 @@ export async function generateTutorResponse(
         const completion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
-                ...history.map(h => ({ role: h.role === "ai" ? "assistant" : "user" as any, content: h.content })),
+                ...validHistory.map(h => ({
+                    role: h.role === "ai" ? "assistant" : "user" as any ,// eslint-disable-line @typescript-eslint/no-explicit-any
+                    content: h.content
+                })),
                 { role: "user", content: message }
             ],
             model: TEXT_MODELS.LLAMA_8B.model,
