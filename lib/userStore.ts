@@ -174,7 +174,7 @@ export function recordActivity(): void {
 
   if (lastDate) {
     const last = new Date(lastDate)
-    const diffTime = Math.abs(now.getTime() - last.getTime())
+    const current = new Date(today); const diffTime = Math.abs(current.getTime() - last.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
     if (diffDays === 1) {
