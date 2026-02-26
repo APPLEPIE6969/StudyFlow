@@ -280,8 +280,11 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 export async function transcribeAudio(audioBase64: string): Promise<string> {
+  const audioBuffer = Buffer.from(audioBase64, "base64");
+  const file = new File([audioBuffer], "audio.webm", { type: "audio/webm" });
+
   const completion = await groq.audio.transcriptions.create({
-    file: audioBase64 as unknown as File,
+    file,
     model: SPECIAL_MODELS.WHISPER_TURBO,
   });
   return completion.text;
