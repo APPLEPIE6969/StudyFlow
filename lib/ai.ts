@@ -121,7 +121,7 @@ const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
 // QUIZ GENERATION
 // =============================================================================
 
-import type { QuizQuestion } from "./types";
+import type { QuizQuestion } from "./types.ts";
 export type { QuizQuestion };
 
 export interface ChatMessage {
