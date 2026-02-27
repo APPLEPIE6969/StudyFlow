@@ -37,9 +37,10 @@ describe("rateLimit", () => {
         assert.strictEqual(limiter.check(limit, "user2"), false);
     });
 
-    test("should reset the limit after the interval", (t) => {
-        t.mock.timers.enable({ apis: ["Date"] });
-        const interval = 1000;
+    test("should reset the limit after the interval", async (t) => {
+        // Use real timers for lru-cache expiry, as mocking Date might not be enough for its internal tracking
+        // or just wait sufficiently if the interval is short.
+        const interval = 50;
         const limiter = rateLimit({ interval, uniqueTokenPerInterval: 10 });
         const limit = 1;
         const token = "user1";
@@ -47,8 +48,8 @@ describe("rateLimit", () => {
         assert.strictEqual(limiter.check(limit, token), true);
         assert.strictEqual(limiter.check(limit, token), false);
 
-        // Advance time by interval + 1ms
-        t.mock.timers.tick(interval + 1);
+        // Wait for interval to pass
+        await new Promise(resolve => setTimeout(resolve, interval + 20));
 
         assert.strictEqual(limiter.check(limit, token), true, "Limit should be reset after interval");
     });

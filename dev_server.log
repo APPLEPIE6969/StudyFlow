@@ -1,0 +1,30 @@
+
+> study-app@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 3.2s
+○ Compiling /dashboard ...
+ GET /dashboard 200 in 6.2s (compile: 5.6s, proxy.ts: 117ms, render: 477ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:5330:204)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 2.7s (compile: 2.7s, render: 41ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:5330:204)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 48ms (compile: 41ms, render: 7ms)
+ GET /login 200 in 828ms (compile: 736ms, proxy.ts: 14ms, render: 78ms)
