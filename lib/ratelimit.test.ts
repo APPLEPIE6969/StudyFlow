@@ -54,6 +54,24 @@ describe("rateLimit", () => {
         assert.strictEqual(limiter.check(limit, token), true, "Limit should be reset after interval");
     });
 
+    test("should reset the limit after the interval even if requests are made in between", async () => {
+        const interval = 100;
+        const limiter = rateLimit({ interval, uniqueTokenPerInterval: 10 });
+        const limit = 1;
+        const token = "user1";
+
+        assert.strictEqual(limiter.check(limit, token), true);
+        assert.strictEqual(limiter.check(limit, token), false);
+
+        await new Promise(resolve => setTimeout(resolve, 60));
+        // This request is blocked, but it should not extend the TTL
+        assert.strictEqual(limiter.check(limit, token), false);
+
+        await new Promise(resolve => setTimeout(resolve, 60)); // total 120ms > 100ms
+        // If TTL was extended, this would be false. It should be true.
+        assert.strictEqual(limiter.check(limit, token), true);
+    });
+
     test("should respect uniqueTokenPerInterval by evicting old tokens when the cache is full", () => {
         const limiter = rateLimit({ interval: 60000, uniqueTokenPerInterval: 2 });
         const limit = 1;
