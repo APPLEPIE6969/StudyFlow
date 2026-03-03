@@ -13,7 +13,7 @@ import { useTheme } from "@/components/ThemeProvider"
 const sidebarItems = [
   { name: "nav.dashboard", href: "/dashboard", icon: "dashboard" },
   { name: "nav.courses", href: "/courses", icon: "menu_book" },
-  { name: "nav.quizzes", href: "https://tiktok-kappa-steel.vercel.app/quizzes", icon: "quiz" },
+  { name: "nav.quizzes", href: "/quizzes", icon: "quiz" },
   { name: "nav.study_sets", href: "/study-sets", icon: "library_books" },
   { name: "nav.tutor", href: "/study/explanation", icon: "psychology" },
   { name: "nav.resources", href: "/resources", icon: "folder_open" },
