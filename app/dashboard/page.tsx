@@ -239,7 +239,7 @@ export default function Dashboard() {
           <section data-tutorial="quick-actions" className="animate-fade-in-up stagger-1">
             <h3 className="mb-4 text-lg font-bold text-slate-900 dark:text-white">{t("dashboard.quick_actions")}</h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Link href="/create" className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-primary p-6 text-white transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] animate-scale-in stagger-1">
+              <Link href="https://tiktok-kappa-steel.vercel.app/quiz/generator" className="group relative flex flex-col items-start gap-4 overflow-hidden rounded-2xl bg-primary p-6 text-white transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] animate-scale-in stagger-1">
                 <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm transition-transform group-hover:scale-110">
                   <span className="material-symbols-outlined text-3xl">auto_awesome</span>
                 </div>
