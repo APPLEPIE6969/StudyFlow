@@ -12,6 +12,18 @@ interface EmptyStateProps {
     className?: string
 }
 
+/**
+ * Displays a centered empty-state panel with an icon, title, description, a small "Ready when you are!" hint, and an optional action control.
+ *
+ * @param icon - Material Symbols icon name to display inside the icon container.
+ * @param title - Primary heading text.
+ * @param description - Supporting descriptive text shown beneath the title.
+ * @param actionLabel - Label for the optional action control; when omitted no action is rendered.
+ * @param actionHref - If provided, renders the action as a client-side link targeting this href.
+ * @param onAction - If provided and `actionHref` is not, renders the action as a button that invokes this callback when clicked.
+ * @param className - Additional CSS classes to append to the root container.
+ * @returns The empty-state React element.
+ */
 export function EmptyState({
     icon,
     title,
@@ -23,14 +35,17 @@ export function EmptyState({
 }: EmptyStateProps) {
     return (
         <div className={`flex flex-col items-center justify-center py-12 px-6 text-center animate-fade-in ${className}`}>
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4 animate-scale-in">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4 animate-scale-in transition-transform hover:scale-110">
                 <span className="material-symbols-outlined text-3xl">{icon}</span>
             </div>
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
                 {title}
             </h3>
-            <p className="text-sm text-slate-500 dark:text-[#a69db9] max-w-sm mb-6">
+            <p className="text-sm text-slate-500 dark:text-[#a69db9] max-w-sm mb-2">
                 {description}
+            </p>
+            <p className="mt-2 text-xs font-semibold text-primary uppercase tracking-widest mb-6">
+                Ready when you are!
             </p>
             {actionLabel && (
                 actionHref ? (
