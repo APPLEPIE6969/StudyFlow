@@ -159,11 +159,11 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
                             <ul className="text-[11px] text-slate-500 dark:text-text-secondary space-y-2">
                                 <li className="flex gap-2">
                                     <span className="text-primary font-bold">1.</span>
-                                    <span>Click the **lock icon** 🔒 next to the URL and reset the Microphone permission to "Allow".</span>
+                                    <span>Click the **lock icon** 🔒 next to the URL and reset the Microphone permission to &quot;Allow&quot;.</span>
                                 </li>
                                 <li className="flex gap-2">
                                     <span className="text-primary font-bold">2.</span>
-                                    <span>Check **Windows Settings &gt; Privacy &gt; Microphone** and ensure "Allow apps to access your microphone" is ON.</span>
+                                    <span>Check **Windows Settings &gt; Privacy &gt; Microphone** and ensure &quot;Allow apps to access your microphone&quot; is ON.</span>
                                 </li>
                                 <li className="flex gap-2">
                                     <span className="text-primary font-bold">3.</span>
