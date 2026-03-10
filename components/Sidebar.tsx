@@ -13,7 +13,7 @@ import { useTheme } from "@/components/ThemeProvider"
 const sidebarItems = [
   { name: "nav.dashboard", href: "/dashboard", icon: "dashboard" },
   { name: "nav.courses", href: "/courses", icon: "menu_book" },
-  { name: "nav.quizzes", href: "https://tiktok-kappa-steel.vercel.app/quizzes", icon: "quiz" },
+  { name: "nav.quizzes", href: "/quizzes", icon: "quiz" },
   { name: "nav.study_sets", href: "/study-sets", icon: "library_books" },
   { name: "nav.tutor", href: "/study/explanation", icon: "psychology" },
   { name: "nav.resources", href: "/resources", icon: "folder_open" },
@@ -89,7 +89,7 @@ export function Sidebar() {
             </span>
           </button>
 
-          <div className="mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-surface-dark-lighter/50 dark:bg-surface-dark-lighter">
+          <Link href="/profile" className="mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-surface-dark-lighter/50 dark:bg-surface-dark-lighter hover:bg-slate-100 dark:hover:bg-surface-dark-lighter/80 transition-colors">
             <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
               {session?.user?.image ? (
                 <Image
@@ -107,7 +107,7 @@ export function Sidebar() {
               <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{session?.user?.name || "Guest User"}</p>
               <p className="text-xs text-slate-500 dark:text-text-secondary">{t("sidebar.level", userProfile?.stats?.currentLevel || 1)} {t("sidebar.apprentice")}</p>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </aside>
