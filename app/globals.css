@@ -81,11 +81,13 @@
 :root {
   --background: #f6f6f8;
   --foreground: #0f172a;
+  color-scheme: light;
 }
 
 .dark {
   --background: #000000;
   --foreground: #ffffff;
+  color-scheme: dark;
 }
 
 body {
@@ -207,16 +209,28 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-  background: #161022;
+  background: transparent;
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #161022;
+}
+
 ::-webkit-scrollbar-thumb {
-  background: #2e2839;
+  background: #cbd5e1;
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #2e2839;
+}
+
 ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #6c2bee;
 }
