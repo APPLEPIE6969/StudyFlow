@@ -85,7 +85,7 @@ export function AuthForm({ initialView = "login" }: { initialView?: "login" | "s
                 <span className="material-symbols-outlined text-gray-400 group-focus-within:text-primary transition-colors text-[20px]">lock</span>
               </div>
               <input className="w-full h-12 pl-11 pr-4 bg-gray-50 dark:bg-[#1f1c27] border border-gray-200 dark:border-[#433b54] rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-gray-400" id="password" placeholder="••••••••" type="password" />
-              <button className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-white transition-colors" type="button">
+              <button aria-label="Toggle password visibility" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-white transition-colors" type="button">
                 <span className="material-symbols-outlined text-[20px]">visibility_off</span>
               </button>
             </div>
