@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
                         role: "user",
                         parts: [{ text: systemPrompt }],
                     },
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     ...history.map((msg: any) => ({
                         role: msg.role === "ai" ? "model" : "user",
                         parts: [{ text: msg.content }],

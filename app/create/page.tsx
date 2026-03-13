@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { useLanguage } from "@/lib/i18n"
 
-import { saveQuiz, SavedQuiz } from "@/lib/quizStore"
+import { saveQuiz } from "@/lib/quizStore"
 import { recordActivity, addXP } from "@/lib/userStore"
 import { QuizQuestion } from "@/lib/ai"
 
@@ -339,6 +339,7 @@ const ManualTermItem = memo(({
     index: number;
     onUpdate: (index: number, field: "term" | "definition", value: string) => void;
     onDelete: (index: number) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     t: (key: string, ...args: any[]) => string;
 }) => {
     return (

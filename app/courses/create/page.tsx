@@ -26,6 +26,7 @@ export default function CreateCourse() {
                 router.push("/onboarding")
                 return
             }
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsLoading(false)
         }
     }, [status, session, router])

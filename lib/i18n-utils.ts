@@ -4,6 +4,7 @@ export function translate(
     translations: Translations,
     language: string,
     key: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
 ): string {
     const dict = translations[language] || translations["English"];

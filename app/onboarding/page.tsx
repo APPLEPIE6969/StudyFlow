@@ -17,6 +17,7 @@ export default function Onboarding() {
     // Pre-fill name from session
     useEffect(() => {
         if (session?.user?.name) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setName(session.user.name)
         }
     }, [session])

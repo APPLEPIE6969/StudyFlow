@@ -23,6 +23,7 @@ export default function QuizResults({ params }: { params: Promise<{ id: string }
     useEffect(() => {
         const loadedQuiz = getQuizById(id)
         if (loadedQuiz) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuiz(loadedQuiz)
         }
     }, [id])

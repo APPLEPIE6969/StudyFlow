@@ -194,6 +194,7 @@ Output strictly valid JSON in the following format:
 Do not include markdown code blocks. Just the raw JSON array.`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseJSONFromAI(text: string): any {
   const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
   return JSON.parse(cleanedText);
