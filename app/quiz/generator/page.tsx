@@ -33,6 +33,7 @@ const questionCountOptions = [
   { value: "25", label: "25 Questions" },
 ]
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const languageOptions = LANGUAGES as any
 
 const aiModeOptions = [

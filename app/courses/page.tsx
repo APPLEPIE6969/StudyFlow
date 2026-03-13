@@ -42,7 +42,9 @@ export default function Courses() {
 
       // Load user's courses (empty for new users)
       // In a real app, this would fetch from an API
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCourses([])
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoading(false)
     }
   }, [status, session, router])

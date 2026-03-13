@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
-
-export async function middleware(request: NextRequest) {
+export async function middleware() {
     const response = NextResponse.next();
 
     // Security Headers

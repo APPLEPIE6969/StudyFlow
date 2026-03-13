@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
  * Signs data using HMAC-SHA256 with the AUTH_SECRET.
  * This ensures the data hasn't been tampered with when it's returned to the server.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function signData(data: any): string {
   const secret = process.env.AUTH_SECRET;
 
@@ -24,6 +25,7 @@ export function signData(data: any): string {
  * Verifies that the provided signature matches the data.
  * Robust against timing attacks and length mismatches.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function verifyData(data: any, signature: string): boolean {
   if (!signature) return false;
 
@@ -37,7 +39,7 @@ export function verifyData(data: any, signature: string): boolean {
     }
 
     return crypto.timingSafeEqual(signatureBuffer, expectedBuffer);
-  } catch (error) {
+  } catch {
     // If anything fails (e.g. invalid hex), return false
     return false;
   }

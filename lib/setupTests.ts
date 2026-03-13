@@ -32,12 +32,12 @@ export class MockStorage {
 
 export function setupTests() {
   if (typeof global.window === "undefined") {
-    // @ts-ignore
+    // @ts-expect-error - Mocking window for tests
     global.window = {};
   }
 
   if (typeof global.localStorage === "undefined") {
-    // @ts-ignore
+    // @ts-expect-error - Mocking localStorage for tests
     global.localStorage = new MockStorage();
   }
 }

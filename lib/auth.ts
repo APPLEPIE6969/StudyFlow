@@ -3,7 +3,7 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import GitHub from "next-auth/providers/github"
 
-// @ts-ignore
+// @ts-expect-error - NextAuth types mismatch in Next.js 16
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({

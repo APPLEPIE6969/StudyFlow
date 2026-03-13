@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/components/Providers";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "StudyFlow - Learn Anything, Powered by AI",
@@ -33,12 +36,8 @@ export default function RootLayout({
             `,
           }}
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-[var(--background)] text-[var(--foreground)] font-display overflow-x-hidden antialiased selection:bg-primary selection:text-white transition-colors duration-300">
+      <body className={`${inter.className} bg-[var(--background)] text-[var(--foreground)] font-display overflow-x-hidden antialiased selection:bg-primary selection:text-white transition-colors duration-300`}>
         <Providers>
           {children}
         </Providers>

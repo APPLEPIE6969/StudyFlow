@@ -6,9 +6,8 @@ import { useSession } from "next-auth/react"
 import { getUserProfile, saveUserProfile } from "@/lib/userStore"
 import { EmptyState } from "@/components/EmptyState"
 import { Select } from "@/components/ui/Select"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { LANGUAGES } from "@/lib/constants"
-import { useRouter } from "next/navigation"
 
 import { useLanguage } from "@/lib/i18n"
 
@@ -16,7 +15,6 @@ import { useTheme } from "@/components/ThemeProvider"
 
 export default function Profile() {
   const { data: session } = useSession()
-  const router = useRouter()
   const userProfile = getUserProfile()
   const { language, setLanguage, t } = useLanguage()
   const { theme, toggleTheme } = useTheme()
@@ -185,6 +183,7 @@ export default function Profile() {
                   </div>
                   <div className="w-40">
                     <Select
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       options={LANGUAGES as any}
                       value={language}
                       onChange={handleLanguageChange}
@@ -279,7 +278,7 @@ export default function Profile() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-slate-900 dark:text-white">Profile completed</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">You're all set up.</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">You&apos;re all set up.</p>
                         <p className="text-[10px] text-slate-400 mt-1">1h ago</p>
                       </div>
                     </div>
