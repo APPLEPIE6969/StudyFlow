@@ -233,8 +233,6 @@ export async function generateQuiz(
 
   for (const { provider, model } of fallbackChain) {
     try {
-      console.log(`Trying ${provider}/${model}...`);
-
       let questions: QuizQuestion[];
       if (provider === "gemini") {
         questions = await generateWithGemini(prompt, model);
@@ -246,7 +244,6 @@ export async function generateQuiz(
         throw new Error("Invalid response: empty or not an array");
       }
 
-      console.log(`Success with ${provider}/${model}`);
       return { questions, usedMode: mode, usedModel: model };
     } catch (error) {
       console.error(`${provider}/${model} failed:`, error instanceof Error ? error.message : String(error));
