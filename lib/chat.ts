@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Groq from "groq-sdk";
-import { TEXT_MODELS, ChatMessage } from "./ai";
+import { TEXT_MODELS, ChatMessage, prepareHistory } from "./ai";
 
 // Initialize clients
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
@@ -25,15 +25,8 @@ export async function generateTutorResponse(
         .replace("{subject}", subject)
         .replace("{language}", language);
 
-    // Filter out system messages first as we handle system prompt separately
-    let validHistory = history.filter(h => h.role !== 'system');
-
-    // DEDUPLICATION FIX:
-    // If the last message in history is the same as the current query, remove it.
-    // This prevents duplication since we always append the current query to the prompt.
-    if (validHistory.length > 0 && validHistory[validHistory.length - 1].content === message) {
-        validHistory = validHistory.slice(0, -1);
-    }
+    // Prepare history: filters system messages and removes redundant user message if any
+    const validHistory = prepareHistory(history, message);
 
     // 1. Try Gemini 2.5 Flash (Best balance of speed and smarts)
     try {
