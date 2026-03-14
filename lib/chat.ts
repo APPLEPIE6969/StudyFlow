@@ -1,10 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import Groq from "groq-sdk";
-import { TEXT_MODELS, ChatMessage, prepareHistory } from "./ai";
-
-// Initialize clients
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_key" });
+import { TEXT_MODELS, ChatMessage, prepareHistory, genAI, groq } from "./ai";
 
 const SYSTEM_PROMPT_TEMPLATE = `You are a helpful and friendly AI Tutor specializing in {subject}.
 Your goal is to help the student learn by explaining concepts clearly, asking guiding questions, and providing examples.
@@ -30,7 +24,6 @@ export async function generateTutorResponse(
 
     // 1. Try Gemini 2.5 Flash (Best balance of speed and smarts)
     try {
-        console.log("Attempting Gemini 2.5 Flash...");
         const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
             systemInstruction: systemPrompt
@@ -52,7 +45,6 @@ export async function generateTutorResponse(
 
     // 2. Try Gemini 1.5 Flash (Reliable fallback)
     try {
-        console.log("Attempting Gemini 1.5 Flash...");
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
             systemInstruction: systemPrompt
@@ -74,7 +66,6 @@ export async function generateTutorResponse(
 
     // 3. Try Groq (Llama 3.3 70B)
     try {
-        console.log("Attempting Groq Llama 3.3 70B...");
         const completion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
@@ -96,7 +87,6 @@ export async function generateTutorResponse(
 
     // 4. Try Groq (Llama 3.1 8B - Fast fallback)
     try {
-        console.log("Attempting Groq Llama 8B...");
         const completion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
