@@ -23,6 +23,8 @@ const SUBJECTS = [
   { id: "history", name: "History", icon: "history_edu", color: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
 ]
 
+const SUBJECT_OPTIONS = SUBJECTS.map(s => ({ value: s.id, label: s.name }))
+
 export default function SmartExplanation() {
   const [query, setQuery] = useState("")
   const [chatHistory, setChatHistory] = useState<Message[]>([])
@@ -147,7 +149,7 @@ export default function SmartExplanation() {
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-slate-500 dark:text-text-secondary">Subject:</span>
                 <Select
-                  options={SUBJECTS.map(s => ({ value: s.id, label: s.name }))}
+                  options={SUBJECT_OPTIONS}
                   value={selectedSubject.id}
                   onChange={(val) => setSelectedSubject(SUBJECTS.find(s => s.id === val) || SUBJECTS[0])}
                   className="w-48"
