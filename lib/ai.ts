@@ -294,6 +294,23 @@ export async function transcribeAudio(audioBase64: string): Promise<string> {
   return completion.text;
 }
 
+/**
+ * Prepares history by filtering out system messages and removing redundant user messages
+ * that match the current query to prevent duplication in LLM prompts.
+ */
+export function prepareHistory(history: ChatMessage[], message: string): ChatMessage[] {
+  let validHistory = history.filter(h => h.role !== 'system');
+
+  if (validHistory.length > 0) {
+    const lastMsg = validHistory[validHistory.length - 1];
+    if (lastMsg.role === 'user' && lastMsg.content === message) {
+      validHistory = validHistory.slice(0, -1);
+    }
+  }
+
+  return validHistory;
+}
+
 export async function chatWithTutor(message: string, subject: string, history: ChatMessage[]): Promise<string> {
   const systemPrompt = `You are an expert ${subject} tutor. Your goal is to help the user learn by explaining concepts clearly, asking guiding questions, and providing examples.
   - Be encouraging and patient.
@@ -301,9 +318,11 @@ export async function chatWithTutor(message: string, subject: string, history: C
   - Use simple language suitable for a student.
   - Keep responses concise but helpful.`;
 
+  const validHistory = prepareHistory(history, message);
+
   const messages = [
     { role: "system" as const, content: systemPrompt },
-    ...history.map(msg => ({
+    ...validHistory.map(msg => ({
       role: (msg.role === "ai" ? "assistant" : msg.role) as "system" | "user" | "assistant",
       content: msg.content
     })),
@@ -326,8 +345,7 @@ export async function chatWithTutor(message: string, subject: string, history: C
       });
 
       const chat = model.startChat({
-        history: history
-          .filter(msg => msg.role !== "system")
+        history: validHistory
           .map(msg => ({
             role: msg.role === "user" ? "user" : "model",
             parts: [{ text: msg.content }],
