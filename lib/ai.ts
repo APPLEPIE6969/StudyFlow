@@ -2,8 +2,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import Groq from "groq-sdk";
 
 // Initialize clients
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_key" });
+export const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+export const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || "dummy_key" });
 
 // =============================================================================
 // MODEL CATALOG
@@ -194,10 +194,8 @@ Output strictly valid JSON in the following format:
 Do not include markdown code blocks. Just the raw JSON array.`;
 }
 
-export function parseJSONFromAI(text: string): any {
-  const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-  return JSON.parse(cleanedText);
-}
+import { parseJSONFromAI as parseJSON } from "./ai-utils";
+export const parseJSONFromAI = parseJSON;
 
 async function generateWithGemini(prompt: string, modelName: string): Promise<QuizQuestion[]> {
   const model = genAI.getGenerativeModel({ model: modelName });
