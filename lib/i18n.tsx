@@ -831,6 +831,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         if (profile?.language) {
             setLanguageState(profile.language)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const setLanguage = (lang: Language) => {
