@@ -19,6 +19,7 @@ import { TutorialOverlay } from "@/components/TutorialOverlay"
 import { AnimatedDropdown } from "@/components/AnimatedDropdown"
 import { useTheme } from "@/components/ThemeProvider"
 import { DailyInsight } from "@/components/DailyInsight"
+import { SafeHtml } from "@/components/SafeHtml"
 
 const defaultStats: UserStats = {
   totalQuizzes: 0,
@@ -187,7 +188,7 @@ export default function Dashboard() {
               </h2>
               <p className="text-slate-500 dark:text-text-secondary">
                 {userStats.hoursStudied > 0
-                  ? <span dangerouslySetInnerHTML={{ __html: t("dashboard.learned_minutes", Math.round(userStats.hoursStudied * 60)) }} />
+                  ? <SafeHtml text={t("dashboard.learned_minutes", Math.round(userStats.hoursStudied * 60))} />
                   : t("dashboard.start_learning")
                 }
               </p>
