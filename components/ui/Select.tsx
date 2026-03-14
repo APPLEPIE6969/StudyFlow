@@ -56,6 +56,7 @@ export function Select({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`w-full flex items-center justify-between gap-2 bg-slate-50 dark:bg-[#131118] border border-slate-200 dark:border-[#2e2839] rounded-xl px-4 py-3 text-left text-slate-900 dark:text-white transition-all duration-200 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary ${isOpen ? 'border-primary ring-2 ring-primary/50' : ''
                     }`}
+                aria-label={`Select option, current value: ${selectedOption?.label || placeholder}`}
             >
                 <span className={selectedOption ? '' : 'text-slate-400 dark:text-[#a69db9]'}>
                     {selectedOption?.label || placeholder}
@@ -93,6 +94,7 @@ export function Select({
                                     animationDelay: isOpen ? `${index * 30}ms` : '0ms',
                                     animation: isOpen ? 'slideIn 0.2s ease-out forwards' : 'none'
                                 }}
+                                aria-label={`Select ${option.label}`}
                             >
                                 <span>{option.label}</span>
                                 {value === option.value && (

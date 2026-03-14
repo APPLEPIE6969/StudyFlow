@@ -216,6 +216,7 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
                             : "bg-primary hover:bg-primary/90 text-white"
                     }`}
                 title={isRecording ? t("tutor.stop") : lastError ? "Microphone Access Blocked" : t("tutor.voice_mode")}
+                aria-label={isRecording ? t("tutor.stop") || "Stop recording" : lastError ? "Microphone Access Blocked" : t("tutor.voice_mode") || "Voice mode"}
             >
                 {isProcessing ? (
                     <span className="material-symbols-outlined animate-spin text-xl">refresh</span>

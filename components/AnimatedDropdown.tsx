@@ -40,6 +40,7 @@ export function AnimatedDropdown({
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600 transition-all hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/50 dark:bg-[#1a1622] dark:text-[#a69db9] dark:hover:bg-[#2e2839]"
+                aria-label={`Toggle dropdown, current selection: ${selectedOption?.label || ''}`}
             >
                 {selectedOption?.label}
                 <span className={`material-symbols-outlined text-sm transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
