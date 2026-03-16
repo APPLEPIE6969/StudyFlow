@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert';
-import { parseJSONFromAI } from './ai.ts';
+import { parseJSONFromAI } from './ai-utils.ts';
 
 describe('parseJSONFromAI', () => {
   test('should parse valid JSON without markdown', () => {
