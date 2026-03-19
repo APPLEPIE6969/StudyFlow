@@ -42,8 +42,11 @@ export default function Courses() {
 
       // Load user's courses (empty for new users)
       // In a real app, this would fetch from an API
-      setCourses([])
-      setIsLoading(false)
+      const loadCourses = () => {
+        setCourses([])
+        setIsLoading(false)
+      }
+      loadCourses()
     }
   }, [status, session, router])
 

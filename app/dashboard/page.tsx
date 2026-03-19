@@ -76,7 +76,8 @@ export default function Dashboard() {
 
     if (status === "authenticated" && session?.user?.email) {
       // Check if user has completed onboarding
-      if (!isOnboardingComplete(session.user.email)) {
+      const email = session?.user?.email;
+      if (email && !isOnboardingComplete(email)) {
         router.push("/onboarding")
         return
       }
@@ -92,7 +93,7 @@ export default function Dashboard() {
 
 
       // Check if tutorial should be shown
-      if (!isTutorialComplete(session.user.email)) {
+      if (email && !isTutorialComplete(email)) {
         setShowTutorial(true)
       }
 

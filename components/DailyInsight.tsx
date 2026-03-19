@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useLanguage } from "@/lib/i18n"
 
 const insights = [
   {
@@ -39,15 +38,17 @@ const insights = [
 ]
 
 export function DailyInsight() {
-  const { t } = useLanguage()
   const [insight, setInsight] = useState(insights[0])
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     // Pick a random insight based on the day of the year to keep it consistent for the day
-    const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24)
-    const index = dayOfYear % insights.length
-    setInsight(insights[index])
+    const getInsight = () => {
+      const dayOfYear = Math.floor((new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24)
+      const index = dayOfYear % insights.length
+      setInsight(insights[index])
+    }
+    getInsight()
   }, [])
 
   if (!isVisible) return null
@@ -75,7 +76,7 @@ export function DailyInsight() {
           </div>
 
           <p className="mt-2 text-lg font-medium leading-relaxed text-white">
-            "{insight.text}"
+            &quot;{insight.text}&quot;
           </p>
 
           <p className="mt-2 text-sm font-medium text-white/60">

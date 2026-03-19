@@ -16,9 +16,12 @@ export default function Onboarding() {
 
     // Pre-fill name from session
     useEffect(() => {
-        if (session?.user?.name) {
-            setName(session.user.name)
+        const setSessionName = () => {
+            if (session?.user?.name) {
+                setName(session.user.name)
+            }
         }
+        setSessionName()
     }, [session])
 
     // Redirect if not authenticated
