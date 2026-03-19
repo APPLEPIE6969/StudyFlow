@@ -6,9 +6,8 @@ import { useSession } from "next-auth/react"
 import { getUserProfile, saveUserProfile } from "@/lib/userStore"
 import { EmptyState } from "@/components/EmptyState"
 import { Select } from "@/components/ui/Select"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { LANGUAGES } from "@/lib/constants"
-import { useRouter } from "next/navigation"
 
 import { useLanguage } from "@/lib/i18n"
 
@@ -16,7 +15,6 @@ import { useTheme } from "@/components/ThemeProvider"
 
 export default function Profile() {
   const { data: session } = useSession()
-  const router = useRouter()
   const userProfile = getUserProfile()
   const { language, setLanguage, t } = useLanguage()
   const { theme, toggleTheme } = useTheme()
