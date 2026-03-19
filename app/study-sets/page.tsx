@@ -14,9 +14,12 @@ export default function StudySetsPage() {
 
     useEffect(() => {
         // Load quizzes/study sets from local storage
-        const loadedQuizzes = getUserQuizzes()
-        setStudySets(loadedQuizzes)
-        setIsLoading(false)
+        const load = () => {
+            const loadedQuizzes = getUserQuizzes()
+            setStudySets(loadedQuizzes)
+            setIsLoading(false)
+        }
+        load()
     }, [])
 
     if (isLoading) {

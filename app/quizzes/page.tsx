@@ -24,7 +24,8 @@ export default function MyQuizzes() {
         }
 
         if (status === "authenticated" && session?.user?.email) {
-            if (!isOnboardingComplete(session.user.email)) {
+            const email = session?.user?.email;
+            if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
                 return
             }

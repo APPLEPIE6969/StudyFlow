@@ -18,15 +18,13 @@ export default function CreateCourse() {
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login")
-            return
-        }
-
-        if (status === "authenticated" && session?.user?.email) {
-            if (!isOnboardingComplete(session.user.email)) {
+        } else if (status === "authenticated" && session?.user?.email) {
+            const email = session?.user?.email;
+            if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-                return
+            } else {
+                setIsLoading(false)
             }
-            setIsLoading(false)
         }
     }, [status, session, router])
 

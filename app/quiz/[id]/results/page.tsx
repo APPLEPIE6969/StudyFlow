@@ -21,10 +21,13 @@ export default function QuizResults({ params }: { params: Promise<{ id: string }
     const percentage = Math.round((score / total) * 100)
 
     useEffect(() => {
-        const loadedQuiz = getQuizById(id)
-        if (loadedQuiz) {
-            setQuiz(loadedQuiz)
+        const loadResult = () => {
+            const loadedQuiz = getQuizById(id)
+            if (loadedQuiz) {
+                setQuiz(loadedQuiz)
+            }
         }
+        loadResult()
     }, [id])
 
     const getGrade = () => {
