@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
                         role: "user",
                         parts: [{ text: systemPrompt }],
                     },
-                    ...history.map((msg: any) => ({
+                    ...history.map((msg: { role: string, content: string }) => ({
                         role: msg.role === "ai" ? "model" : "user",
                         parts: [{ text: msg.content }],
                     })),
