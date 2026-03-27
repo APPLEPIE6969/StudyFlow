@@ -70,7 +70,7 @@ export async function generateTutorResponse(
             messages: [
                 { role: "system", content: systemPrompt },
                 ...validHistory.map(h => ({
-                    role: h.role === "ai" ? "assistant" : "user" as any ,// eslint-disable-line @typescript-eslint/no-explicit-any
+                    role: (h.role === "ai" ? "assistant" : "user") as "assistant" | "user",
                     content: h.content
                 })),
                 { role: "user", content: message }
@@ -91,7 +91,7 @@ export async function generateTutorResponse(
             messages: [
                 { role: "system", content: systemPrompt },
                 ...validHistory.map(h => ({
-                    role: h.role === "ai" ? "assistant" : "user" as any ,// eslint-disable-line @typescript-eslint/no-explicit-any
+                    role: (h.role === "ai" ? "assistant" : "user") as "assistant" | "user",
                     content: h.content
                 })),
                 { role: "user", content: message }
