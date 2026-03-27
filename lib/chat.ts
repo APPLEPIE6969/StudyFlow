@@ -22,6 +22,17 @@ export async function generateTutorResponse(
     // Prepare history: filters system messages and removes redundant user message if any
     const validHistory = prepareHistory(history, message);
 
+    // Pre-calculate mapped history for different providers to avoid redundant allocations in fallbacks
+    const geminiHistory = validHistory.map(msg => ({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [{ text: msg.content }],
+    }));
+
+    const groqHistory = validHistory.map(h => ({
+        role: h.role === "ai" ? "assistant" : "user" as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+        content: h.content
+    }));
+
     // 1. Try Gemini 2.5 Flash (Best balance of speed and smarts)
     try {
         const model = genAI.getGenerativeModel({
@@ -30,10 +41,7 @@ export async function generateTutorResponse(
         });
 
         const chat = model.startChat({
-            history: validHistory.map(msg => ({
-                role: msg.role === "user" ? "user" : "model",
-                parts: [{ text: msg.content }],
-            })),
+            history: geminiHistory,
         });
 
         const result = await chat.sendMessage(message);
@@ -51,10 +59,7 @@ export async function generateTutorResponse(
         });
 
         const chat = model.startChat({
-            history: validHistory.map(msg => ({
-                role: msg.role === "user" ? "user" : "model",
-                parts: [{ text: msg.content }],
-            })),
+            history: geminiHistory,
         });
 
         const result = await chat.sendMessage(message);
@@ -69,10 +74,7 @@ export async function generateTutorResponse(
         const completion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
-                ...validHistory.map(h => ({
-                    role: h.role === "ai" ? "assistant" : "user" as any ,// eslint-disable-line @typescript-eslint/no-explicit-any
-                    content: h.content
-                })),
+                ...groqHistory,
                 { role: "user", content: message }
             ],
             model: TEXT_MODELS.LLAMA_70B.model,
@@ -90,10 +92,7 @@ export async function generateTutorResponse(
         const completion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
-                ...validHistory.map(h => ({
-                    role: h.role === "ai" ? "assistant" : "user" as any ,// eslint-disable-line @typescript-eslint/no-explicit-any
-                    content: h.content
-                })),
+                ...groqHistory,
                 { role: "user", content: message }
             ],
             model: TEXT_MODELS.LLAMA_8B.model,
