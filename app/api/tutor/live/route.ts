@@ -1,11 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { auth } from "@/lib/auth";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Ensure this runs on the edge or Node, but for file handling Node is often safer with Next.js depending on config.
 // Using standard Node runtime for now.
 export const runtime = "nodejs";
 
+// Initialize rate limiter: 5 requests per minute for live audio tutoring
+const limiter = rateLimit({
+    interval: 60 * 1000,
+    uniqueTokenPerInterval: 500,
+});
+
 export async function POST(req: NextRequest) {
+    const session = await auth();
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Rate Limiting
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const token = (session.user?.email || ip) + "_live";
+    const limit = 5; // 5 audio requests per minute
+
+    if (!limiter.check(limit, token)) {
+        return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
+    }
+
     try {
         const formData = await req.formData();
         const audioFile = formData.get("audio") as Blob;
