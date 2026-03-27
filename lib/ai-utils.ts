@@ -44,3 +44,22 @@ export function parseJSONFromAI(text: string): any {
     return JSON.parse(cleanedText);
   }
 }
+
+import type { ChatMessage } from "./types.ts";
+
+/**
+ * Prepares history by filtering out system messages and removing redundant user messages
+ * that match the current query to prevent duplication in LLM prompts.
+ */
+export function prepareHistory(history: ChatMessage[], message: string): ChatMessage[] {
+  let validHistory = history.filter(h => h.role !== 'system');
+
+  if (validHistory.length > 0) {
+    const lastMsg = validHistory[validHistory.length - 1];
+    if (lastMsg.role === 'user' && lastMsg.content === message) {
+      validHistory = validHistory.slice(0, -1);
+    }
+  }
+
+  return validHistory;
+}

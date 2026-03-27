@@ -121,13 +121,8 @@ const FALLBACK_CHAINS: Record<AIMode, ModelEntry[]> = {
 // QUIZ GENERATION
 // =============================================================================
 
-import type { QuizQuestion } from "./types.ts";
-export type { QuizQuestion };
-
-export interface ChatMessage {
-  role: "user" | "ai" | "system";
-  content: string;
-}
+import type { QuizQuestion, ChatMessage } from "./types.ts";
+export type { QuizQuestion, ChatMessage };
 
 export interface QuizGenerationParams {
   topic: string;
@@ -194,8 +189,9 @@ Output strictly valid JSON in the following format:
 Do not include markdown code blocks. Just the raw JSON array.`;
 }
 
-import { parseJSONFromAI as parseJSON } from "./ai-utils";
+import { parseJSONFromAI as parseJSON, prepareHistory as prepare } from "./ai-utils";
 export const parseJSONFromAI = parseJSON;
+export const prepareHistory = prepare;
 
 async function generateWithGemini(prompt: string, modelName: string): Promise<QuizQuestion[]> {
   const model = genAI.getGenerativeModel({ model: modelName });
@@ -287,23 +283,6 @@ export async function transcribeAudio(audioBase64: string): Promise<string> {
     model: SPECIAL_MODELS.WHISPER_TURBO,
   });
   return completion.text;
-}
-
-/**
- * Prepares history by filtering out system messages and removing redundant user messages
- * that match the current query to prevent duplication in LLM prompts.
- */
-export function prepareHistory(history: ChatMessage[], message: string): ChatMessage[] {
-  let validHistory = history.filter(h => h.role !== 'system');
-
-  if (validHistory.length > 0) {
-    const lastMsg = validHistory[validHistory.length - 1];
-    if (lastMsg.role === 'user' && lastMsg.content === message) {
-      validHistory = validHistory.slice(0, -1);
-    }
-  }
-
-  return validHistory;
 }
 
 export async function chatWithTutor(message: string, subject: string, history: ChatMessage[]): Promise<string> {
