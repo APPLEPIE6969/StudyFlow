@@ -4,3 +4,8 @@ export interface QuizQuestion {
   correctAnswer: string;
   explanation: string;
 }
+
+export interface ChatMessage {
+  role: "user" | "ai" | "system";
+  content: string;
+}
