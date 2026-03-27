@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateTutorResponse } from "@/lib/chat";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
+import { rateLimit } from "@/lib/ratelimit";
+
+// Initialize rate limiter: 10 requests per minute per user/IP
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500,
+});
 
 // Input validation schema
 const tutorSchema = z.object({
@@ -18,6 +25,15 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Rate Limiting
+  const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+  const token = session.user?.email || ip;
+  const limit = 10; // 10 requests per minute
+
+  if (!limiter.check(limit, token)) {
+    return NextResponse.json({ error: "Rate limit exceeded. Please try again later." }, { status: 429 });
   }
 
   try {
