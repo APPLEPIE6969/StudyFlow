@@ -79,12 +79,14 @@
 
 /* Base styles */
 :root {
+  color-scheme: light;
   --background: #f6f6f8;
   --foreground: #0f172a;
   color-scheme: light;
 }
 
 .dark {
+  color-scheme: dark;
   --background: #000000;
   --foreground: #ffffff;
   color-scheme: dark;
