@@ -25,7 +25,9 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
 
     // Check permission state on mount if possible
     useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (typeof navigator !== 'undefined' && navigator.permissions && (navigator.permissions as any).query) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (navigator.permissions as any).query({ name: 'microphone' }).then((result: any) => {
                 if (result.state === 'denied') {
                     // Pre-emptively show help if we know it's denied
@@ -58,11 +60,13 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
             permissionState: 'unknown'
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (navigator.permissions && (navigator.permissions as any).query) {
             try {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const result = await (navigator.permissions as any).query({ name: 'microphone' });
                 info.permissionState = result.state;
-            } catch (e) { }
+            } catch (_e) { }
         }
         setDiagInfo(info)
 
@@ -113,6 +117,7 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
 
             mediaRecorder.start()
             setIsRecording(true)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             console.error("Mic Access Error:", err.name, err.message)
             setIsProcessing(false)

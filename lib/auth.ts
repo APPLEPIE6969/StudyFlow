@@ -3,7 +3,7 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import GitHub from "next-auth/providers/github"
 
-// @ts-ignore
+// @ts-expect-error Types for NextAuth may be incomplete in this version
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
