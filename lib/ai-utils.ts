@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseJSONFromAI(text: string): any {
   if (!text || text.trim() === "") {
     throw new SyntaxError("Unexpected end of JSON input");
@@ -6,14 +7,14 @@ export function parseJSONFromAI(text: string): any {
   // Stage 1: Direct Parse
   try {
     return JSON.parse(text);
-  } catch (e) {
+  } catch (_e) {
     // Stage 2: Markdown block extraction
     const markdownRegex = /```(?:json)?\s*([\s\S]*?)\s*```/g;
     let match;
     while ((match = markdownRegex.exec(text)) !== null) {
       try {
         return JSON.parse(match[1]);
-      } catch (e2) {
+      } catch (_e2) {
         // continue trying other code blocks
       }
     }
@@ -24,7 +25,7 @@ export function parseJSONFromAI(text: string): any {
     if (arrayMatch) {
       try {
         return JSON.parse(arrayMatch[0]);
-      } catch (e3) {
+      } catch (_e3) {
         // ignore
       }
     }
@@ -34,7 +35,7 @@ export function parseJSONFromAI(text: string): any {
     if (objectMatch) {
       try {
         return JSON.parse(objectMatch[0]);
-      } catch (e4) {
+      } catch (_e4) {
         // ignore
       }
     }
