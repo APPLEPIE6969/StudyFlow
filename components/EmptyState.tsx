@@ -12,6 +12,18 @@ interface EmptyStateProps {
     className?: string
 }
 
+/**
+ * Displays a centered empty-state panel with an icon, title, description, a small "Ready when you are!" hint, and an optional action control.
+ *
+ * @param icon - Material Symbols icon name to display inside the icon container.
+ * @param title - Primary heading text.
+ * @param description - Supporting descriptive text shown beneath the title.
+ * @param actionLabel - Label for the optional action control; when omitted no action is rendered.
+ * @param actionHref - If provided, renders the action as a client-side link targeting this href.
+ * @param onAction - If provided and `actionHref` is not, renders the action as a button that invokes this callback when clicked.
+ * @param className - Additional CSS classes to append to the root container.
+ * @returns The empty-state React element.
+ */
 export function EmptyState({
     icon,
     title,

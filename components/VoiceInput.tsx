@@ -8,6 +8,15 @@ interface VoiceInputProps {
     disabled?: boolean
 }
 
+/**
+ * Render a microphone input UI that manages microphone permissions, records audio, and forwards the recorded audio blob to `onAudioSend`.
+ *
+ * The component handles secure-context checks, permission diagnostics, user-facing permission help, recording and processing states, and stops/releases the microphone after recording.
+ *
+ * @param onAudioSend - Callback invoked with the recorded audio `Blob` when recording stops; should return a Promise (errors will be caught and logged).
+ * @param disabled - If true, the microphone control is visually and functionally disabled.
+ * @returns The VoiceInput React element.
+ */
 export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
     const [isRecording, setIsRecording] = useState(false)
     const [isProcessing, setIsProcessing] = useState(false)
