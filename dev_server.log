@@ -1,9 +1,55 @@
-npm error code ETIMEDOUT
-npm error errno ETIMEDOUT
-npm error network request to https://registry.npmjs.org/next failed, reason:
-npm error network This is a problem related to network connectivity.
-npm error network In most cases you are behind a proxy or have bad network settings.
-npm error network
-npm error network If you are behind a proxy, please make sure that the
-npm error network 'proxy' config is set properly.  See: 'npm help config'
-npm error A complete log of this run can be found in: /home/jules/.npm/_logs/2026-03-12T14_03_17_778Z-debug-0.log
+
+> study-app@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 1634ms
+○ Compiling / ...
+ HEAD / 200 in 5.0s (compile: 4.3s, proxy.ts: 102ms, render: 556ms)
+ GET /test-dashboard 200 in 970ms (compile: 805ms, proxy.ts: 10ms, render: 155ms)
+ GET /onboarding 200 in 892ms (compile: 833ms, proxy.ts: 14ms, render: 45ms)
+ GET /login 200 in 967ms (compile: 839ms, proxy.ts: 37ms, render: 90ms)
+ GET /login 200 in 55ms (compile: 10ms, proxy.ts: 7ms, render: 38ms)
+ GET /test-dashboard 200 in 260ms (compile: 90ms, proxy.ts: 8ms, render: 162ms)
+ GET /onboarding 200 in 57ms (compile: 9ms, proxy.ts: 9ms, render: 38ms)
+ GET /login 200 in 106ms (compile: 14ms, proxy.ts: 17ms, render: 76ms)
+ GET /login 200 in 74ms (compile: 12ms, proxy.ts: 18ms, render: 45ms)
+ GET /test-dashboard 200 in 252ms (compile: 88ms, proxy.ts: 6ms, render: 158ms)
+ GET /onboarding 200 in 42ms (compile: 7ms, proxy.ts: 6ms, render: 29ms)
+ GET /login 200 in 103ms (compile: 19ms, proxy.ts: 11ms, render: 72ms)
+ GET /login 200 in 59ms (compile: 7ms, proxy.ts: 6ms, render: 45ms)
+ GET /test-dashboard 200 in 165ms (compile: 9ms, proxy.ts: 13ms, render: 143ms)
+ GET /onboarding 200 in 87ms (compile: 9ms, proxy.ts: 7ms, render: 71ms)
+ GET /login 200 in 167ms (compile: 15ms, proxy.ts: 16ms, render: 136ms)
+ GET /login 200 in 88ms (compile: 11ms, proxy.ts: 12ms, render: 65ms)
+ GET /test-dashboard 200 in 251ms (compile: 76ms, proxy.ts: 4ms, render: 171ms)
+ GET /onboarding 200 in 48ms (compile: 5ms, proxy.ts: 8ms, render: 35ms)
+ GET /login 200 in 108ms (compile: 13ms, proxy.ts: 8ms, render: 87ms)
+ GET /login 200 in 74ms (compile: 9ms, proxy.ts: 5ms, render: 60ms)
+ GET /dashboard 200 in 569ms (compile: 484ms, proxy.ts: 5ms, render: 79ms)
+ GET /onboarding 200 in 72ms (compile: 3ms, proxy.ts: 9ms, render: 60ms)
+ GET /onboarding 200 in 47ms (compile: 6ms, proxy.ts: 4ms, render: 36ms)
+ GET / 200 in 98ms (compile: 4ms, proxy.ts: 4ms, render: 89ms)
+ GET /grid.svg 404 in 1187ms (compile: 962ms, proxy.ts: 7ms, render: 218ms)
+ GET /dashboard 200 in 66ms (compile: 4ms, proxy.ts: 4ms, render: 57ms)
+ GET /onboarding 200 in 116ms (compile: 10ms, proxy.ts: 29ms, render: 76ms)
+ GET /onboarding 200 in 42ms (compile: 6ms, proxy.ts: 5ms, render: 31ms)
+ GET / 200 in 82ms (compile: 5ms, proxy.ts: 5ms, render: 72ms)
+ GET /grid.svg 404 in 130ms (compile: 15ms, proxy.ts: 7ms, render: 108ms)
+ GET /dashboard 200 in 105ms (compile: 12ms, proxy.ts: 14ms, render: 79ms)
+ GET / 200 in 81ms (compile: 5ms, proxy.ts: 5ms, render: 71ms)
+ GET /grid.svg 404 in 95ms (compile: 12ms, proxy.ts: 7ms, render: 75ms)
+ GET /dashboard 200 in 115ms (compile: 9ms, proxy.ts: 8ms, render: 98ms)
+ GET / 200 in 85ms (compile: 4ms, proxy.ts: 6ms, render: 75ms)
+ GET /grid.svg 404 in 138ms (compile: 17ms, proxy.ts: 6ms, render: 115ms)
+ GET /dashboard 200 in 116ms (compile: 13ms, proxy.ts: 8ms, render: 94ms)
