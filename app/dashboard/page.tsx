@@ -20,6 +20,7 @@ import { AnimatedDropdown } from "@/components/AnimatedDropdown"
 import { useTheme } from "@/components/ThemeProvider"
 import { DailyInsight } from "@/components/DailyInsight"
 import { SafeHtml } from "@/components/SafeHtml"
+import { DailyQuote } from "@/components/DailyQuote"
 
 const defaultStats: UserStats = {
   totalQuizzes: 0,
@@ -236,6 +237,9 @@ export default function Dashboard() {
 
           {/* Daily Insight */}
           <DailyInsight />
+
+          {/* Daily Quote */}
+          <DailyQuote />
 
           {/* Quick Actions */}
           <section data-tutorial="quick-actions" className="animate-fade-in-up stagger-1">
