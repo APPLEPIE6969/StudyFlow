@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { markTutorialComplete, isTutorialComplete } from "@/lib/userStore"
+import { useState } from "react"
+import { markTutorialComplete } from "@/lib/userStore"
 
 interface TutorialStep {
     target: string
