@@ -18,7 +18,7 @@ export function rateLimit(options?: RateLimitOptions) {
                 tokenCache.set(token, [1]);
             } else {
                 tokenCount[0] += 1;
-                tokenCache.set(token, tokenCount);
+                tokenCache.set(token, tokenCount, { noUpdateTTL: true });
             }
             return tokenCount[0] <= limit;
         },
