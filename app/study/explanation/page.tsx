@@ -134,7 +134,7 @@ export default function SmartExplanation() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-[#0a0a0c]">
+    <div className="flex h-screen bg-background-light dark:bg-background-dark">
       <Sidebar />
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
