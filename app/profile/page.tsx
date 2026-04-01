@@ -12,6 +12,7 @@ import { LANGUAGES } from "@/lib/constants"
 import { useLanguage } from "@/lib/i18n"
 
 import { useTheme } from "@/components/ThemeProvider"
+import { SafeHtml } from "@/components/SafeHtml"
 
 export default function Profile() {
   const { data: session } = useSession()
@@ -89,7 +90,7 @@ export default function Profile() {
                   <p className="text-slate-900 dark:text-white text-3xl font-bold">{stats?.hoursStudied || 0}h</p>
                 </div>
                 <p className="text-slate-500 dark:text-text-secondary text-xs mt-2">
-                  {t("dashboard.learned_minutes", Math.round((stats?.hoursStudied || 0) * 60))}
+                  <SafeHtml text={t("dashboard.learned_minutes", Math.round((stats?.hoursStudied || 0) * 60))} />
                 </p>
               </div>
             </div>
@@ -218,7 +219,7 @@ export default function Profile() {
               title={t("profile.coming_soon")}
               description={t("profile.coming_soon_desc")}
               actionLabel={t("profile.go_back")}
-              onAction={() => setActiveTab("overview")}
+              actionHref="/profile"
             />
           </div>
         )
