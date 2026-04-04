@@ -60,12 +60,11 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
-  const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
+  const [userData] = useState<UserData>(emptyUserData)
   const [showTutorial, setShowTutorial] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
-  const { theme, toggleTheme, mounted } = useTheme()
+  const { theme, toggleTheme, mounted: themeMounted } = useTheme()
 
   // Check authentication and onboarding
   useEffect(() => {
@@ -85,23 +84,20 @@ export default function Dashboard() {
       // Record today's activity
       recordActivity()
 
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
-
       // Check if tutorial should be shown
       if (email && !isTutorialComplete(email)) {
         setShowTutorial(true)
       }
-
-      // Load user data (empty for new users)
-      setUserData(emptyUserData)
-      setIsLoading(false)
     }
   }, [status, session, router])
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const profile = isMounted ? getUserProfile() : null
+  const userStats = profile?.stats || defaultStats
+  const isLoading = !isMounted || status === "loading"
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -170,7 +166,7 @@ export default function Dashboard() {
               title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-              <span className={`material-symbols-outlined ${!mounted ? 'invisible' : ''}`}>
+              <span className={`material-symbols-outlined ${!themeMounted ? 'invisible' : ''}`}>
                 {theme === 'dark' ? 'light_mode' : 'dark_mode'}
               </span>
             </button>

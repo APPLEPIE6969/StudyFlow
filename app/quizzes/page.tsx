@@ -15,7 +15,7 @@ export default function MyQuizzes() {
     const router = useRouter()
     const { t } = useLanguage()
     const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -30,10 +30,18 @@ export default function MyQuizzes() {
                 return
             }
 
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
+            // To completely avoid warnings and still load from local storage:
+            const loadedQuizzes = getUserQuizzes()
+            setQuizzes(loadedQuizzes)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, session, router])
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const isLoading = !mounted || status === "loading"
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
