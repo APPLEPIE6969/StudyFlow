@@ -10,7 +10,7 @@ import Link from "next/link"
 export default function CreateCourse() {
     const { data: session, status } = useSession()
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(true)
+    const [mounted, setMounted] = useState(false)
     const [courseName, setCourseName] = useState("")
     const [subject, setSubject] = useState("")
     const [description, setDescription] = useState("")
@@ -22,11 +22,15 @@ export default function CreateCourse() {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-            } else {
-                setIsLoading(false)
             }
         }
     }, [status, session, router])
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const isLoading = !mounted || status === "loading"
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()

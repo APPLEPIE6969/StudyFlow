@@ -63,7 +63,7 @@ describe('security lib', () => {
 
       // Passing something that isn't a string might trigger an error if not handled
       // although verifyData expects a string type.
-      // @ts-ignore
+      // @ts-expect-error Types may be incomplete or global variables need mocking
       const isValid = verifyData(testData, { not: 'a string' });
       assert.strictEqual(isValid, false);
     });

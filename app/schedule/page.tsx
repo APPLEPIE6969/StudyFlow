@@ -10,7 +10,7 @@ import { isOnboardingComplete } from "@/lib/userStore"
 export default function Schedule() {
     const { data: session, status } = useSession()
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(true)
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -19,11 +19,15 @@ export default function Schedule() {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-            } else {
-                setIsLoading(false)
             }
         }
     }, [status, session, router])
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    const isLoading = !mounted || status === "loading"
 
     if (status === "loading" || isLoading) {
         return (
