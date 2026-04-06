@@ -140,7 +140,7 @@ export default function Dashboard() {
         {/* Floating Header */}
         <header className="sticky top-4 z-20 mx-4 mb-4 flex h-16 items-center justify-between rounded-2xl border border-slate-200 bg-white/80 px-6 backdrop-blur-md shadow-sm dark:border-white/5 dark:bg-[#131118]/80 transition-all">
           <div className="flex items-center gap-4 md:hidden">
-            <button className="text-slate-500 hover:text-slate-900 dark:text-white">
+            <button aria-label="Menu" className="text-slate-500 hover:text-slate-900 dark:text-white">
               <span className="material-symbols-outlined">menu</span>
             </button>
             <span className="text-lg font-bold text-slate-900 dark:text-white">StudyFlow</span>
@@ -160,7 +160,7 @@ export default function Dashboard() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-            <button className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 hover:scale-105 dark:bg-surface-dark-lighter dark:text-white dark:hover:bg-white/10 relative">
+            <button aria-label="Notifications" className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 hover:scale-105 dark:bg-surface-dark-lighter dark:text-white dark:hover:bg-white/10 relative">
               <span className="material-symbols-outlined">notifications</span>
               <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#131118]"></span>
             </button>
@@ -305,7 +305,7 @@ export default function Dashboard() {
                     >
                       <div className="flex h-full w-full items-start justify-between bg-black/40 p-4 backdrop-blur-[2px]">
                         <span className="rounded-lg bg-black/60 px-2 py-1 text-xs font-bold text-white backdrop-blur-md">{course.subject}</span>
-                        <button className="rounded-full bg-white/20 p-1.5 text-white hover:bg-white/40 transition-colors">
+                        <button aria-label="Bookmark course" className="rounded-full bg-white/20 p-1.5 text-white hover:bg-white/40 transition-colors">
                           <span className="material-symbols-outlined text-sm">bookmark</span>
                         </button>
                       </div>
