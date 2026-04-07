@@ -23,6 +23,10 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState("overview")
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState([
+    { id: 1, titleKey: "profile.welcome_message", descKey: "profile.welcome_desc", timeKey: "profile.just_now", icon: "rocket_launch", colorClass: "text-primary", bgClass: "bg-primary/10", isI18n: true, opacityClass: "" },
+    { id: 2, title: "Profile completed", desc: "You're all set up.", time: "1h ago", icon: "check_circle", colorClass: "text-green-500", bgClass: "bg-green-500/10", isI18n: false, opacityClass: "opacity-60" }
+  ])
 
   // Update language in user profile when changed
   const handleLanguageChange = (newLanguage: string) => {
@@ -218,7 +222,6 @@ export default function Profile() {
               title={t("profile.coming_soon")}
               description={t("profile.coming_soon_desc")}
               actionLabel={t("profile.go_back")}
-              onAction={() => setActiveTab("overview")}
             />
           </div>
         )
@@ -250,7 +253,9 @@ export default function Profile() {
               >
                 <span className="material-symbols-outlined">notifications</span>
                 {/* Notification Badge */}
-                <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-surface-dark"></span>
+                {notifications.length > 0 && (
+                  <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-surface-dark"></span>
+                )}
               </button>
 
               {/* Notifications Dropdown */}
@@ -258,29 +263,38 @@ export default function Profile() {
                 <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-surface-dark-lighter/50 dark:bg-surface-dark-lighter animate-fade-in-up">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-bold text-slate-900 dark:text-white">{t("profile.notifications_title")}</h4>
-                    <button className="text-xs text-primary hover:underline">{t("profile.mark_all_read")}</button>
+                    {notifications.length > 0 && (
+                      <button
+                        onClick={() => setNotifications([])}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        {t("profile.mark_all_read")}
+                      </button>
+                    )}
                   </div>
                   <div className="space-y-3">
-                    <div className="flex gap-3 items-start">
-                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-primary">
-                        <span className="material-symbols-outlined text-sm">rocket_launch</span>
+                    {notifications.length > 0 ? notifications.map((notif) => (
+                      <div key={notif.id} className={`flex gap-3 items-start ${notif.opacityClass}`}>
+                        <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${notif.bgClass} ${notif.colorClass}`}>
+                          <span className="material-symbols-outlined text-sm">{notif.icon}</span>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                            {notif.isI18n ? t(notif.titleKey!) : notif.title}
+                          </p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {notif.isI18n ? t(notif.descKey!) : notif.desc}
+                          </p>
+                          <p className="text-[10px] text-slate-400 mt-1">
+                            {notif.isI18n ? t(notif.timeKey!) : notif.time}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">{t("profile.welcome_message")}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("profile.welcome_desc")}</p>
-                        <p className="text-[10px] text-slate-400 mt-1">{t("profile.just_now")}</p>
+                    )) : (
+                      <div className="py-6 text-center">
+                        <p className="text-sm text-slate-500 dark:text-slate-400">No new notifications</p>
                       </div>
-                    </div>
-                    <div className="flex gap-3 items-start opacity-60">
-                      <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0 text-green-500">
-                        <span className="material-symbols-outlined text-sm">check_circle</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-slate-900 dark:text-white">Profile completed</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">You're all set up.</p>
-                        <p className="text-[10px] text-slate-400 mt-1">1h ago</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               )}
