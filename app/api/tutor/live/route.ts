@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { auth } from "@/lib/auth";
 import { rateLimit } from "@/lib/ratelimit";
+import { transcribeAudio } from "@/lib/ai";
+import { generateTutorResponse } from "@/lib/chat";
 
 // Ensure this runs on the edge or Node, but for file handling Node is often safer with Next.js depending on config.
 // Using standard Node runtime for now.
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest) {
                         role: "user",
                         parts: [{ text: systemPrompt }],
                     },
-                    ...history.map((msg: any) => ({
+                    ...history.map((msg: { role: string, content: string }) => ({
                         role: msg.role === "ai" ? "model" : "user",
                         parts: [{ text: msg.content }],
                     })),
@@ -114,9 +116,6 @@ export async function POST(req: NextRequest) {
 
             // Let's try to transcribe using Groq (since we have the key) and then chat.
             try {
-                const { transcribeAudio } = await import("@/lib/ai");
-                const { generateTutorResponse } = await import("@/lib/chat");
-
                 // Transcribe
                 const transcription = await transcribeAudio(base64Audio);
 
