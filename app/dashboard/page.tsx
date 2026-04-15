@@ -60,24 +60,38 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
-  const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
   const [showTutorial, setShowTutorial] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
   const { theme, toggleTheme, mounted } = useTheme()
 
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  const handleTutorialComplete = () => {
+    setShowTutorial(false)
+  }
+
+  // Derived state to avoid setting state in effect
+  const profile = isMounted ? getUserProfile() : null
+  const stats = profile?.stats || defaultStats
+
+  // Load user data (empty for new users)
+  const userData = emptyUserData
+
   // Check authentication and onboarding
   useEffect(() => {
+    if (!isMounted) return
     if (status === "unauthenticated") {
       router.push("/login")
       return
     }
 
-    if (status === "authenticated" && session?.user?.email) {
+    const userEmail = session?.user?.email;
+    if (status === "authenticated" && userEmail) {
       // Check if user has completed onboarding
-      const email = session?.user?.email;
-      if (email && !isOnboardingComplete(email)) {
+      if (!isOnboardingComplete(userEmail)) {
         router.push("/onboarding")
         return
       }
@@ -85,23 +99,24 @@ export default function Dashboard() {
       // Record today's activity
       recordActivity()
 
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
-
-      // Check if tutorial should be shown
-      if (email && !isTutorialComplete(email)) {
-        setShowTutorial(true)
-      }
-
-      // Load user data (empty for new users)
-      setUserData(emptyUserData)
-      setIsLoading(false)
     }
-  }, [status, session, router])
+  }, [status, session?.user?.email, router, isMounted])
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    const userEmail = session?.user?.email;
+    if (isMounted && status === "authenticated" && userEmail) {
+      if (!isTutorialComplete(userEmail)) {
+        // use timeout to avoid setting state synchronously in effect
+        timeoutId = setTimeout(() => {
+          setShowTutorial(true)
+        }, 0);
+      }
+    }
+    return () => clearTimeout(timeoutId);
+  }, [isMounted, status, session?.user?.email])
+
+  const isLoading = status === "loading" || !isMounted || status === "unauthenticated" || (status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -111,7 +126,7 @@ export default function Dashboard() {
   const hasActivity = userData.weeklyActivity.some(v => v > 0)
   const hasEvents = userData.upcomingEvents.length > 0
 
-  if (status === "loading" || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background-dark">
         <div className="flex flex-col items-center gap-4">
@@ -128,7 +143,7 @@ export default function Dashboard() {
       {showTutorial && session?.user?.email && (
         <TutorialOverlay
           userEmail={session.user.email}
-          onComplete={() => setShowTutorial(false)}
+          onComplete={handleTutorialComplete}
         />
       )}
 
@@ -188,8 +203,8 @@ export default function Dashboard() {
                 {t("dashboard.welcome", displayName)} 👋
               </h2>
               <p className="text-slate-500 dark:text-text-secondary">
-                {userStats.hoursStudied > 0
-                  ? <SafeHtml text={t("dashboard.learned_minutes", Math.round(userStats.hoursStudied * 60))} />
+                {stats.hoursStudied > 0
+                  ? <SafeHtml text={t("dashboard.learned_minutes", Math.round(stats.hoursStudied * 60))} />
                   : t("dashboard.start_learning")
                 }
               </p>
@@ -204,7 +219,7 @@ export default function Dashboard() {
                   <span className="text-xs font-semibold uppercase tracking-wider">{t("stats.streak")}</span>
                 </div>
                 <div className="mt-1 flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-slate-900 dark:text-white">{userStats.dailyStreak}</span>
+                  <span className="text-2xl font-bold text-slate-900 dark:text-white">{stats.dailyStreak}</span>
                   <span className="text-sm font-medium text-slate-500 dark:text-text-secondary">{t("stats.days")}</span>
                 </div>
               </div>
@@ -216,17 +231,17 @@ export default function Dashboard() {
                     <span className="material-symbols-outlined text-primary">military_tech</span>
                     <span className="text-xs font-semibold uppercase tracking-wider">{t("stats.level")}</span>
                   </div>
-                  <span className="text-xs font-bold text-primary">{t("sidebar.level", userStats.currentLevel)}</span>
+                  <span className="text-xs font-bold text-primary">{t("sidebar.level", stats.currentLevel)}</span>
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-text-secondary">
                     <span>{t("stats.xp")}</span>
-                    <span>{userStats.xpEarned} / {userStats.xpToNextLevel}</span>
+                    <span>{stats.xpEarned} / {stats.xpToNextLevel}</span>
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-background-dark">
                     <div
                       className="h-full rounded-full bg-linear-to-r from-primary to-purple-400 transition-all duration-500"
-                      style={{ width: `${(userStats.xpEarned / userStats.xpToNextLevel) * 100}%` }}
+                      style={{ width: `${(stats.xpEarned / stats.xpToNextLevel) * 100}%` }}
                     ></div>
                   </div>
                 </div>

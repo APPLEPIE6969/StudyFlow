@@ -14,10 +14,16 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    const [deletedQuizIds, setDeletedQuizIds] = useState<Set<string>>(new Set())
 
     useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    useEffect(() => {
+        if (!isMounted) return
+
         if (status === "unauthenticated") {
             router.push("/login")
             return
@@ -29,16 +35,19 @@ export default function MyQuizzes() {
                 router.push("/onboarding")
                 return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
-    }, [status, session, router])
+    }, [status, session, router, isMounted])
+
+    // Derive quizzes during render instead of in effect
+    const allQuizzes = isMounted ? getUserQuizzes() : []
+    const quizzes = allQuizzes.filter(q => !deletedQuizIds.has(q.id))
+
+    const isLoading = status === "loading" || !isMounted || status === "unauthenticated" || (status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+            setDeletedQuizIds(prev => new Set(prev).add(id))
         }
     }
 

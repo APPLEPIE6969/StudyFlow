@@ -10,22 +10,28 @@ import { isOnboardingComplete } from "@/lib/userStore"
 export default function Schedule() {
     const { data: session, status } = useSession()
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
 
     useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    useEffect(() => {
+        if (!isMounted) return
+
         if (status === "unauthenticated") {
             router.push("/login")
         } else if (status === "authenticated" && session?.user?.email) {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-            } else {
-                setIsLoading(false)
             }
         }
-    }, [status, session, router])
+    }, [status, session, router, isMounted])
 
-    if (status === "loading" || isLoading) {
+    const isLoading = status === "loading" || !isMounted || status === "unauthenticated" || (status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
+
+    if (isLoading) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
