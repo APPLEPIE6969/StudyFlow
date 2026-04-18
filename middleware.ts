@@ -3,23 +3,17 @@ import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 
 export async function middleware(request: NextRequest) {
-    const response = NextResponse.next();
+    const nonce = crypto.randomUUID();
 
-    // Security Headers
-    const headers = response.headers;
-
-    headers.set("X-DNS-Prefetch-Control", "on");
-    headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
-    headers.set("X-Frame-Options", "SAMEORIGIN");
-    headers.set("X-Content-Type-Options", "nosniff");
-    headers.set("Referrer-Policy", "origin-when-cross-origin");
-    headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    // Clone the request headers
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-nonce", nonce);
 
     // CSP (Content Security Policy) - Allow Google Fonts, Analytics, etc.
-    // Note: Adjust 'self' and domains as needed for your specific external resources
+    const isDev = process.env.NODE_ENV !== "production";
     const csp = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google-analytics.com;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ""} https://www.google-analytics.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' blob: data: https://*.googleusercontent.com https://lh3.googleusercontent.com https://avatars.githubusercontent.com; 
     font-src 'self' https://fonts.gstatic.com;
@@ -32,7 +26,24 @@ export async function middleware(request: NextRequest) {
     upgrade-insecure-requests;
   `;
 
-    headers.set("Content-Security-Policy", csp.replace(/\s{2,}/g, " ").trim());
+    const cspFormatted = csp.replace(/\s{2,}/g, " ").trim();
+    requestHeaders.set("Content-Security-Policy", cspFormatted);
+
+    const response = NextResponse.next({
+        request: {
+            headers: requestHeaders,
+        },
+    });
+
+    response.headers.set("Content-Security-Policy", cspFormatted);
+
+    // Security Headers
+    response.headers.set("X-DNS-Prefetch-Control", "on");
+    response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+    response.headers.set("X-Frame-Options", "SAMEORIGIN");
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("Referrer-Policy", "origin-when-cross-origin");
+    response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
     return response;
 }
