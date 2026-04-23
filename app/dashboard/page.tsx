@@ -60,12 +60,15 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
-  const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
-  const [showTutorial, setShowTutorial] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
   const { theme, toggleTheme, mounted } = useTheme()
+  const [forceRender, setForceRender] = useState(0)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true)
+  }, [])
 
   // Check authentication and onboarding
   useEffect(() => {
@@ -84,24 +87,17 @@ export default function Dashboard() {
 
       // Record today's activity
       recordActivity()
-
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
-
-      // Check if tutorial should be shown
-      if (email && !isTutorialComplete(email)) {
-        setShowTutorial(true)
-      }
-
-      // Load user data (empty for new users)
-      setUserData(emptyUserData)
-      setIsLoading(false)
     }
   }, [status, session, router])
+
+  const profile = isMounted ? getUserProfile() : null
+  const userStats = profile?.stats || defaultStats
+
+  const email = session?.user?.email;
+  // Use forceRender to re-evaluate after tutorial completes
+  const showTutorial = isMounted && email && forceRender >= 0 ? !isTutorialComplete(email) : false;
+  const userData = emptyUserData; // Since this was just being set to emptyUserData in effect
+  const isLoading = !isMounted || status === "loading" || status === "unauthenticated" || !(session?.user?.email && isOnboardingComplete(session.user.email))
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -128,7 +124,7 @@ export default function Dashboard() {
       {showTutorial && session?.user?.email && (
         <TutorialOverlay
           userEmail={session.user.email}
-          onComplete={() => setShowTutorial(false)}
+          onComplete={() => setForceRender(prev => prev + 1)}
         />
       )}
 
