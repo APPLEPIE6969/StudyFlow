@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { isOnboardingComplete } from "@/lib/userStore"
-import { getUserQuizzes, deleteQuiz, SavedQuiz } from "@/lib/quizStore"
+import { getUserQuizzes, deleteQuiz } from "@/lib/quizStore"
 import Link from "next/link"
 import { useLanguage } from "@/lib/i18n"
 
@@ -14,8 +14,13 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    const [deletedQuizIds, setDeletedQuizIds] = useState<Set<string>>(new Set())
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -29,16 +34,19 @@ export default function MyQuizzes() {
                 router.push("/onboarding")
                 return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
     }, [status, session, router])
+
+    const isLoading = !isMounted || status === "loading" || status === "unauthenticated" || !(session?.user?.email && isOnboardingComplete(session.user.email))
+
+    // We derive quizzes from localStorage but filter out ones deleted this session
+    const allQuizzes = isMounted ? getUserQuizzes() : []
+    const quizzes = allQuizzes.filter(q => !deletedQuizIds.has(q.id))
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+            setDeletedQuizIds(prev => new Set(prev).add(id))
         }
     }
 
