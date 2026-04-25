@@ -14,8 +14,13 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -25,22 +30,21 @@ export default function MyQuizzes() {
 
         if (status === "authenticated" && session?.user?.email) {
             const email = session?.user?.email;
-            if (email && !isOnboardingComplete(email)) {
+            if (email && isMounted && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
                 return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
-    }, [status, session, router])
+    }, [status, session, router, isMounted])
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+            setDeletedIds(prev => new Set(prev).add(id))
         }
     }
+
+    const quizzes = isMounted ? getUserQuizzes().filter(q => !deletedIds.has(q.id)) : []
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)
@@ -52,7 +56,9 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    const isRedirecting = status === "unauthenticated" || (status === "authenticated" && isMounted && session?.user?.email && !isOnboardingComplete(session.user.email))
+
+    if (status === "loading" || !isMounted || isRedirecting) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
