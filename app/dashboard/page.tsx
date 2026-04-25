@@ -60,12 +60,15 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
-  const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
-  const [showTutorial, setShowTutorial] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const [isTutorialDismissed, setIsTutorialDismissed] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
   const { theme, toggleTheme, mounted } = useTheme()
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true)
+  }, [])
 
   // Check authentication and onboarding
   useEffect(() => {
@@ -77,31 +80,22 @@ export default function Dashboard() {
     if (status === "authenticated" && session?.user?.email) {
       // Check if user has completed onboarding
       const email = session?.user?.email;
-      if (email && !isOnboardingComplete(email)) {
+      if (email && isMounted && !isOnboardingComplete(email)) {
         router.push("/onboarding")
         return
       }
 
       // Record today's activity
-      recordActivity()
-
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
+      if (isMounted) {
+        recordActivity()
       }
-
-
-      // Check if tutorial should be shown
-      if (email && !isTutorialComplete(email)) {
-        setShowTutorial(true)
-      }
-
-      // Load user data (empty for new users)
-      setUserData(emptyUserData)
-      setIsLoading(false)
     }
-  }, [status, session, router])
+  }, [status, session, router, isMounted])
+
+  const profile = isMounted && session?.user?.email ? getUserProfile() : null;
+  const userStats = profile?.stats || defaultStats;
+  const userData = emptyUserData;
+  const showTutorial = isMounted && session?.user?.email && !isTutorialComplete(session.user.email);
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -111,7 +105,9 @@ export default function Dashboard() {
   const hasActivity = userData.weeklyActivity.some(v => v > 0)
   const hasEvents = userData.upcomingEvents.length > 0
 
-  if (status === "loading" || isLoading) {
+  const isRedirecting = status === "unauthenticated" || (status === "authenticated" && isMounted && session?.user?.email && !isOnboardingComplete(session.user.email))
+
+  if (status === "loading" || !isMounted || isRedirecting) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background-dark">
         <div className="flex flex-col items-center gap-4">
@@ -125,12 +121,12 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-slate-50 dark:bg-background-dark">
       {/* Tutorial Overlay */}
-      {showTutorial && session?.user?.email && (
+      {!isTutorialDismissed && showTutorial && session?.user?.email ? (
         <TutorialOverlay
           userEmail={session.user.email}
-          onComplete={() => setShowTutorial(false)}
+          onComplete={() => setIsTutorialDismissed(true)}
         />
-      )}
+      ) : null}
 
       <Sidebar />
 
