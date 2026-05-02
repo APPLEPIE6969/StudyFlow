@@ -14,31 +14,32 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    const [refreshCounter, setRefreshCounter] = useState(0)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
+
+    const isRedirecting = status === "unauthenticated" || (status === "authenticated" && !!session?.user?.email && !isOnboardingComplete(session.user.email))
 
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login")
-            return
-        }
-
-        if (status === "authenticated" && session?.user?.email) {
-            const email = session?.user?.email;
-            if (email && !isOnboardingComplete(email)) {
+        } else if (status === "authenticated" && session?.user?.email) {
+            if (!isOnboardingComplete(session.user.email)) {
                 router.push("/onboarding")
-                return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
     }, [status, session, router])
+
+    const quizzesList = isMounted ? getUserQuizzes() : []
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+            setRefreshCounter(prev => prev + 1)
         }
     }
 
@@ -52,7 +53,7 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    if (!isMounted || status === "loading" || isRedirecting) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
@@ -78,9 +79,9 @@ export default function MyQuizzes() {
                     </Link>
                 </div>
 
-                {quizzes.length > 0 ? (
+                {quizzesList.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {quizzes.map((quiz, index) => (
+                        {quizzesList.map((quiz, index) => (
                             <div
                                 key={quiz.id}
                                 className={`group bg-white dark:bg-surface-dark-lighter border border-slate-200 dark:border-surface-dark-lighter/50 rounded-2xl overflow-hidden transition-all hover:shadow-lg hover:scale-[1.02] animate-fade-in-up stagger-${Math.min(index + 1, 5)}`}
