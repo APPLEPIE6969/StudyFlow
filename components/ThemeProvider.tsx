@@ -28,7 +28,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             setThemeState("light")
         }
         setMounted(true)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // Apply theme class to document
