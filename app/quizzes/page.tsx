@@ -30,7 +30,9 @@ export default function MyQuizzes() {
                 return
             }
 
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuizzes(getUserQuizzes())
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsLoading(false)
         }
     }, [status, session, router])

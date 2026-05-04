@@ -33,7 +33,7 @@ const questionCountOptions = [
   { value: "25", label: "25 Questions" },
 ]
 
-const languageOptions = LANGUAGES as any
+const languageOptions = LANGUAGES as unknown as { value: string; label: string; description?: string }[]
 
 const aiModeOptions = [
   { value: "fast", label: "⚡ Fast", description: "Quick generation, best for simple topics" },
