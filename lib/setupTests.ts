@@ -32,13 +32,13 @@ export class MockStorage {
 
 export function setupTests() {
   if (typeof global.window === "undefined") {
-    // @ts-ignore
-    global.window = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (global as any).window = {};
   }
 
   if (typeof global.localStorage === "undefined") {
-    // @ts-ignore
-    global.localStorage = new MockStorage();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (global as any).localStorage = new MockStorage();
   }
 }
 

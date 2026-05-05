@@ -60,12 +60,17 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
   const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
   const { theme, toggleTheme, mounted } = useTheme()
+  const [isClientMounted, setIsClientMounted] = useState(false)
+
+  // Track client hydration
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsClientMounted(true)
+  }, [])
 
   // Check authentication and onboarding
   useEffect(() => {
@@ -75,8 +80,7 @@ export default function Dashboard() {
     }
 
     if (status === "authenticated" && session?.user?.email) {
-      // Check if user has completed onboarding
-      const email = session?.user?.email;
+      const email = session.user.email;
       if (email && !isOnboardingComplete(email)) {
         router.push("/onboarding")
         return
@@ -85,23 +89,23 @@ export default function Dashboard() {
       // Record today's activity
       recordActivity()
 
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
-
       // Check if tutorial should be shown
       if (email && !isTutorialComplete(email)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setShowTutorial(true)
       }
 
       // Load user data (empty for new users)
       setUserData(emptyUserData)
-      setIsLoading(false)
     }
   }, [status, session, router])
+
+  // Compute redirect state for render short-circuiting
+  const isRedirecting = status === "unauthenticated" ||
+                        (status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
+
+  // Derive stats directly instead of using state to prevent set-state-in-effect
+  const userStats = isClientMounted ? (getUserProfile()?.stats || defaultStats) : defaultStats
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -111,7 +115,7 @@ export default function Dashboard() {
   const hasActivity = userData.weeklyActivity.some(v => v > 0)
   const hasEvents = userData.upcomingEvents.length > 0
 
-  if (status === "loading" || isLoading) {
+  if (status === "loading" || !isClientMounted || isRedirecting) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background-dark">
         <div className="flex flex-col items-center gap-4">
