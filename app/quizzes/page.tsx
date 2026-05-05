@@ -15,7 +15,12 @@ export default function MyQuizzes() {
     const router = useRouter()
     const { t } = useLanguage()
     const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -29,11 +34,20 @@ export default function MyQuizzes() {
                 router.push("/onboarding")
                 return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
     }, [status, session, router])
+
+    const isRedirecting = status === "unauthenticated" ||
+                          (status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
+
+    // Load quizzes
+    useEffect(() => {
+        if (status === "authenticated" && session?.user?.email && !isRedirecting) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setQuizzes(getUserQuizzes())
+        }
+    }, [status, session, isRedirecting])
+
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
@@ -52,7 +66,7 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    if (status === "loading" || !isMounted || isRedirecting) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">

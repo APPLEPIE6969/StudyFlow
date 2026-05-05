@@ -63,7 +63,7 @@ describe('security lib', () => {
 
       // Passing something that isn't a string might trigger an error if not handled
       // although verifyData expects a string type.
-      // @ts-ignore
+      // @ts-expect-error - Testing invalid runtime type input for verifyData
       const isValid = verifyData(testData, { not: 'a string' });
       assert.strictEqual(isValid, false);
     });

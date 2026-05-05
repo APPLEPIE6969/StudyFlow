@@ -10,10 +10,15 @@ import Link from "next/link"
 export default function CreateCourse() {
     const { data: session, status } = useSession()
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(true)
     const [courseName, setCourseName] = useState("")
     const [subject, setSubject] = useState("")
     const [description, setDescription] = useState("")
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -22,11 +27,12 @@ export default function CreateCourse() {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-            } else {
-                setIsLoading(false)
             }
         }
     }, [status, session, router])
+
+    const isRedirecting = status === "unauthenticated" ||
+                          (status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -35,7 +41,7 @@ export default function CreateCourse() {
         router.push("/courses")
     }
 
-    if (status === "loading" || isLoading) {
+    if (status === "loading" || !isMounted || isRedirecting) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
