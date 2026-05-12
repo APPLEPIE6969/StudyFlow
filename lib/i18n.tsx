@@ -829,9 +829,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const profile = getUserProfile()
         if (profile?.language) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLanguageState(profile.language)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
     const setLanguage = (lang: Language) => {
