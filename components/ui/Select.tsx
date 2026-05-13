@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 
 interface SelectOption {
     value: string
@@ -25,7 +25,7 @@ export function Select({
     const [isOpen, setIsOpen] = useState(false)
     const selectRef = useRef<HTMLDivElement>(null)
 
-    const selectedOption = options.find(opt => opt.value === value)
+    const selectedOption = useMemo(() => options.find(opt => opt.value === value), [options, value])
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
