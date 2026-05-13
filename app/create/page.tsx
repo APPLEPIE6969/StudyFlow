@@ -84,13 +84,18 @@ export default function Create() {
                 correctAnswer: t.correctAnswer,
                 explanation: t.explanation
             }))
-            : manualTerms.filter(t => t.term && t.definition).map((t, i) => ({
-                id: `q-${i}`,
-                question: `What is ${t.term}?`,
-                options: [t.definition, "Incorrect A", "Incorrect B", "Incorrect C"],
-                correctAnswer: t.definition,
-                explanation: t.definition
-            }))
+            : manualTerms.reduce((acc, t) => {
+                if (t.term && t.definition) {
+                    acc.push({
+                        id: `q-${acc.length}`,
+                        question: `What is ${t.term}?`,
+                        options: [t.definition, "Incorrect A", "Incorrect B", "Incorrect C"],
+                        correctAnswer: t.definition,
+                        explanation: t.definition
+                    })
+                }
+                return acc
+            }, [] as any[])
 
         if (questions.length === 0) {
             alert(t("create.error_terms"))

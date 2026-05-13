@@ -15,7 +15,7 @@ function benchmarkInline() {
   for (let i = 0; i < ITERATIONS; i++) {
     const options = SUBJECTS.map(s => ({ value: s.id, label: s.name }));
     // Prevent optimization
-    if (options.length === 0) console.log(options);
+    if (options.length === 0) { (globalThis as any)._unused = options; }
   }
   return performance.now() - start;
 }
@@ -25,7 +25,7 @@ function benchmarkConstant() {
   for (let i = 0; i < ITERATIONS; i++) {
     const options = SUBJECT_OPTIONS;
     // Prevent optimization
-    if (options.length === 0) console.log(options);
+    if (options.length === 0) { (globalThis as any)._unused = options; }
   }
   return performance.now() - start;
 }
