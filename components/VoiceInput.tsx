@@ -25,8 +25,8 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
 
     // Check permission state on mount if possible
     useEffect(() => {
-        if (typeof navigator !== 'undefined' && navigator.permissions && (navigator.permissions as any).query) {
-            (navigator.permissions as any).query({ name: 'microphone' }).then((result: any) => {
+        if (typeof navigator !== 'undefined' && navigator.permissions && (navigator.permissions as unknown as { query: (arg: unknown) => Promise<unknown> }).query) {
+            (navigator.permissions as unknown as { query: (arg: unknown) => Promise<{ state: string, onchange: (() => void) | null }> }).query({ name: 'microphone' }).then((result) => {
                 if (result.state === 'denied') {
                     // Pre-emptively show help if we know it's denied
                     // Actually clearer to wait for click to avoid annoying users
@@ -58,11 +58,11 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
             permissionState: 'unknown'
         }
 
-        if (navigator.permissions && (navigator.permissions as any).query) {
+        if (navigator.permissions && (navigator.permissions as unknown as { query: (arg: unknown) => Promise<unknown> }).query) {
             try {
-                const result = await (navigator.permissions as any).query({ name: 'microphone' });
+                const result = await (navigator.permissions as unknown as { query: (arg: unknown) => Promise<{ state: string }> }).query({ name: 'microphone' });
                 info.permissionState = result.state;
-            } catch (e) { }
+            } catch { }
         }
         setDiagInfo(info)
 
@@ -113,10 +113,11 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
 
             mediaRecorder.start()
             setIsRecording(true)
-        } catch (err: any) {
-            console.error("Mic Access Error:", err.name, err.message)
+        } catch (err: unknown) {
+            const error = err as Error
+            console.error("Mic Access Error:", error.name, error.message)
             setIsProcessing(false)
-            setLastError(err.name)
+            setLastError(error.name)
 
             if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'NotSecureContext') {
                 setShowPermissionPrompt(true)
