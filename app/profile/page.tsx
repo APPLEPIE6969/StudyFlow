@@ -183,7 +183,7 @@ export default function Profile() {
                   </div>
                   <div className="w-40">
                     <Select
-                      options={LANGUAGES as any}
+                      options={LANGUAGES as { value: string; label: string }[]}
                       value={language}
                       onChange={handleLanguageChange}
                     />
@@ -277,7 +277,7 @@ export default function Profile() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-slate-900 dark:text-white">Profile completed</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">You're all set up.</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">You&apos;re all set up.</p>
                         <p className="text-[10px] text-slate-400 mt-1">1h ago</p>
                       </div>
                     </div>

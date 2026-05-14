@@ -37,7 +37,7 @@ describe("rateLimit", () => {
         assert.strictEqual(limiter.check(limit, "user2"), false);
     });
 
-    test("should reset the limit after the interval", async (t) => {
+    test("should reset the limit after the interval", async () => {
         // Use real timers for lru-cache expiry, as mocking Date might not be enough for its internal tracking
         // or just wait sufficiently if the interval is short.
         const interval = 50;

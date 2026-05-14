@@ -23,6 +23,7 @@ export default function CreateCourse() {
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
             } else {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setIsLoading(false)
             }
         }
