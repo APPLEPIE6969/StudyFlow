@@ -14,22 +14,31 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setThemeState] = useState<Theme>("dark")
+    const [themeState, setThemeState] = useState<Theme | null>(null)
     const [mounted, setMounted] = useState(false)
 
     // Initialize theme from localStorage or system preference
     useEffect(() => {
-        const savedTheme = localStorage.getItem("theme") as Theme | null
-        if (savedTheme) {
-            setThemeState(savedTheme)
-        } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            setThemeState("dark")
-        } else {
-            setThemeState("light")
-        }
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    let derivedTheme: Theme = "dark"
+    if (mounted) {
+        if (themeState) {
+            derivedTheme = themeState
+        } else {
+            const savedTheme = localStorage.getItem("theme") as Theme | null
+            if (savedTheme) {
+                derivedTheme = savedTheme
+            } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                derivedTheme = "dark"
+            } else {
+                derivedTheme = "light"
+            }
+        }
+    }
+    const theme = derivedTheme;
 
     // Apply theme class to document
     useEffect(() => {

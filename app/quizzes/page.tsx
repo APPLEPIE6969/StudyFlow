@@ -14,31 +14,31 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [quizzesState, setQuizzesState] = useState<SavedQuiz[] | null>(null)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMounted(true)
+    }, [])
+
+    const email = session?.user?.email;
+    const isRedirecting = status === "unauthenticated" || (status === "authenticated" && !!email && !isOnboardingComplete(email))
 
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login")
-            return
+        } else if (status === "authenticated" && email && !isOnboardingComplete(email)) {
+            router.push("/onboarding")
         }
+    }, [status, email, router])
 
-        if (status === "authenticated" && session?.user?.email) {
-            const email = session?.user?.email;
-            if (email && !isOnboardingComplete(email)) {
-                router.push("/onboarding")
-                return
-            }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
-        }
-    }, [status, session, router])
+    const quizzes = mounted ? (quizzesState !== null ? quizzesState : getUserQuizzes()) : []
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+            setQuizzesState(getUserQuizzes())
         }
     }
 
@@ -52,7 +52,7 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    if (status === "loading" || isRedirecting || !mounted) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
