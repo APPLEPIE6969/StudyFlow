@@ -60,48 +60,43 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
   const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
-  const { theme, toggleTheme, mounted } = useTheme()
+  const { theme, toggleTheme, mounted: themeMounted } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMounted(true)
+  }, [])
+
+  const email = session?.user?.email;
+  const isRedirecting = status === "unauthenticated" || (status === "authenticated" && !!email && !isOnboardingComplete(email))
 
   // Check authentication and onboarding
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login")
-      return
-    }
-
-    if (status === "authenticated" && session?.user?.email) {
-      // Check if user has completed onboarding
-      const email = session?.user?.email;
-      if (email && !isOnboardingComplete(email)) {
-        router.push("/onboarding")
-        return
-      }
-
+    } else if (status === "authenticated" && email && !isOnboardingComplete(email)) {
+      router.push("/onboarding")
+    } else if (status === "authenticated" && email) {
       // Record today's activity
       recordActivity()
 
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
-
       // Check if tutorial should be shown
-      if (email && !isTutorialComplete(email)) {
+      if (!isTutorialComplete(email)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setShowTutorial(true)
       }
 
       // Load user data (empty for new users)
       setUserData(emptyUserData)
-      setIsLoading(false)
     }
-  }, [status, session, router])
+  }, [status, email, router])
+
+  const profile = mounted ? getUserProfile() : null
+  const userStats = profile?.stats || defaultStats
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -111,7 +106,7 @@ export default function Dashboard() {
   const hasActivity = userData.weeklyActivity.some(v => v > 0)
   const hasEvents = userData.upcomingEvents.length > 0
 
-  if (status === "loading" || isLoading) {
+  if (status === "loading" || isRedirecting || !mounted) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background-dark">
         <div className="flex flex-col items-center gap-4">
@@ -170,7 +165,7 @@ export default function Dashboard() {
               title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
-              <span className={`material-symbols-outlined ${!mounted ? 'invisible' : ''}`}>
+              <span className={`material-symbols-outlined ${!themeMounted ? 'invisible' : ''}`}>
                 {theme === 'dark' ? 'light_mode' : 'dark_mode'}
               </span>
             </button>

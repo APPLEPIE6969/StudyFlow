@@ -823,16 +823,17 @@ const translations: Record<string, Record<string, string>> = {
 // ... (translations object remains unchanged) ...
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguageState] = useState<Language>("English")
+    const [languageState, setLanguageState] = useState<Language | null>(null)
+    const [mounted, setMounted] = useState(false)
 
     // Load from storage on mount
     useEffect(() => {
-        const profile = getUserProfile()
-        if (profile?.language) {
-            setLanguageState(profile.language)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setMounted(true)
     }, [])
+
+    const profile = mounted ? getUserProfile() : null
+    const language = languageState || profile?.language || "English"
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang)
