@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
 import { Providers } from "@/components/Providers";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
@@ -44,6 +45,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+        <ScrollToTop />
         <Analytics />
       </body>
     </html>
