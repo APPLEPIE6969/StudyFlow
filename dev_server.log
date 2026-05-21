@@ -1,9 +1,37 @@
-npm error code ETIMEDOUT
-npm error errno ETIMEDOUT
-npm error network request to https://registry.npmjs.org/next failed, reason:
-npm error network This is a problem related to network connectivity.
-npm error network In most cases you are behind a proxy or have bad network settings.
-npm error network
-npm error network If you are behind a proxy, please make sure that the
-npm error network 'proxy' config is set properly.  See: 'npm help config'
-npm error A complete log of this run can be found in: /home/jules/.npm/_logs/2026-03-12T14_03_17_778Z-debug-0.log
+
+> study-app@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 3s
+○ Compiling / ...
+ GET / 200 in 6.1s (compile: 5.5s, proxy.ts: 146ms, render: 456ms)
+ GET /grid.svg 404 in 1019ms (compile: 793ms, proxy.ts: 9ms, render: 217ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:5330:204)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 2.6s (compile: 2.6s, render: 43ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:5330:204)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 54ms (compile: 44ms, render: 9ms)
+ GET / 200 in 101ms (compile: 8ms, proxy.ts: 7ms, render: 85ms)
+ GET /grid.svg 404 in 106ms (compile: 16ms, proxy.ts: 9ms, render: 81ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:5330:204)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 74ms (compile: 57ms, render: 18ms)
+[31m[auth][error][0m MissingSecret: Please define a `secret`. Read more at https://errors.authjs.dev#missingsecret
+    at assertConfig (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:513:16)
+    at Auth (/app/.next/dev/server/chunks/node_modules_@auth_core_56a04589._.js:5330:204)
+    at async AppRouteRouteModule.do (/app/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.dev.js:5:37866)
+ GET /api/auth/session 500 in 14ms (compile: 6ms, render: 8ms)
