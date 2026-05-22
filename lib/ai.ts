@@ -198,7 +198,7 @@ async function generateWithGemini(prompt: string, modelName: string): Promise<Qu
   const result = await model.generateContent(prompt);
   const response = await result.response;
   const text = response.text();
-  return parseJSONFromAI(text);
+  return parseJSONFromAI(text) as QuizQuestion[];
 }
 
 async function generateWithGroq(prompt: string, modelName: string): Promise<QuizQuestion[]> {
@@ -209,7 +209,7 @@ async function generateWithGroq(prompt: string, modelName: string): Promise<Quiz
   });
 
   const text = completion.choices[0]?.message?.content || "[]";
-  return parseJSONFromAI(text);
+  return parseJSONFromAI(text) as QuizQuestion[];
 }
 
 /**

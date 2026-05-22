@@ -10,7 +10,7 @@ type Language = string
 interface LanguageContextType {
     language: Language
     setLanguage: (lang: Language) => void
-    t: (key: string, ...args: any[]) => string
+    t: (key: string, ...args: (string | number)[]) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -829,9 +829,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const profile = getUserProfile()
         if (profile?.language) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLanguageState(profile.language)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
     const setLanguage = (lang: Language) => {
@@ -840,7 +841,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         // For now, we sync state here, and Profile page syncs to localStorage/UserProfile
     }
 
-    const t = (key: string, ...args: any[]) => {
+    const t = (key: string, ...args: (string | number)[]) => {
         return translate(translations, language, key, ...args)
     }
 
