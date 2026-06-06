@@ -10,22 +10,28 @@ import { isOnboardingComplete } from "@/lib/userStore"
 export default function Schedule() {
     const { data: session, status } = useSession()
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
+
+    const isRedirecting = status === "unauthenticated" || (status === "authenticated" && session?.user?.email && isMounted && !isOnboardingComplete(session.user.email))
+    const isLoading = status === "loading" || !isMounted || isRedirecting
 
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login")
-        } else if (status === "authenticated" && session?.user?.email) {
+        } else if (status === "authenticated" && session?.user?.email && isMounted) {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-            } else {
-                setIsLoading(false)
             }
         }
-    }, [status, session, router])
+    }, [status, session, router, isMounted])
 
-    if (status === "loading" || isLoading) {
+    if (isLoading) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
