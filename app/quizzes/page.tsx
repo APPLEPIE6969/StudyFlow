@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { isOnboardingComplete } from "@/lib/userStore"
-import { getUserQuizzes, deleteQuiz, SavedQuiz } from "@/lib/quizStore"
+import { getUserQuizzes, deleteQuiz } from "@/lib/quizStore"
 import Link from "next/link"
 import { useLanguage } from "@/lib/i18n"
 
@@ -14,8 +14,19 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
+
+    const isRedirecting = status === "unauthenticated" || (status === "authenticated" && session?.user?.email && isMounted && !isOnboardingComplete(session.user.email))
+    const isLoading = status === "loading" || !isMounted || isRedirecting
+
+    // Force re-evaluation of getUserQuizzes when refreshTrigger changes
+    const quizzes = (isMounted || refreshTrigger > 0) ? getUserQuizzes() : []
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -23,22 +34,19 @@ export default function MyQuizzes() {
             return
         }
 
-        if (status === "authenticated" && session?.user?.email) {
+        if (status === "authenticated" && session?.user?.email && isMounted) {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
                 return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
-    }, [status, session, router])
+    }, [status, session, router, isMounted])
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+            setRefreshTrigger(prev => prev + 1)
         }
     }
 
@@ -52,7 +60,7 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    if (isLoading) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">

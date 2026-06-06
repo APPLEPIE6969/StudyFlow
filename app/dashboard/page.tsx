@@ -60,12 +60,25 @@ export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [userStats, setUserStats] = useState<UserStats>(defaultStats)
-  const [userData, setUserData] = useState<UserData>(emptyUserData)
-  const [isLoading, setIsLoading] = useState(true)
   const [showTutorial, setShowTutorial] = useState(false)
   const [activityPeriod, setActivityPeriod] = useState("week")
   const { theme, toggleTheme, mounted } = useTheme()
+  const [isMounted, setIsMounted] = useState(false)
+
+  // Track hydration
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true)
+  }, [])
+
+  // Derive state and redirect logic
+  const isRedirecting = status === "unauthenticated" || (status === "authenticated" && session?.user?.email && isMounted && !isOnboardingComplete(session.user.email));
+  const isLoading = status === "loading" || !isMounted || isRedirecting;
+
+  // Load derived data on render when mounted
+  const profile = isMounted ? getUserProfile() : null;
+  const userStats = profile?.stats || defaultStats;
+  const userData = emptyUserData; // For now always empty user data
 
   // Check authentication and onboarding
   useEffect(() => {
@@ -74,7 +87,7 @@ export default function Dashboard() {
       return
     }
 
-    if (status === "authenticated" && session?.user?.email) {
+    if (status === "authenticated" && session?.user?.email && isMounted) {
       // Check if user has completed onboarding
       const email = session?.user?.email;
       if (email && !isOnboardingComplete(email)) {
@@ -85,23 +98,14 @@ export default function Dashboard() {
       // Record today's activity
       recordActivity()
 
-      // Load user stats
-      const profile = getUserProfile()
-      if (profile?.stats) {
-        setUserStats(profile.stats)
-      }
-
 
       // Check if tutorial should be shown
       if (email && !isTutorialComplete(email)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setShowTutorial(true)
       }
-
-      // Load user data (empty for new users)
-      setUserData(emptyUserData)
-      setIsLoading(false)
     }
-  }, [status, session, router])
+  }, [status, session, router, isMounted])
 
   // Get display name from session or profile
   const displayName = session?.user?.name?.split(" ")[0] || "Learner"
@@ -111,7 +115,7 @@ export default function Dashboard() {
   const hasActivity = userData.weeklyActivity.some(v => v > 0)
   const hasEvents = userData.upcomingEvents.length > 0
 
-  if (status === "loading" || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background-dark">
         <div className="flex flex-col items-center gap-4">
