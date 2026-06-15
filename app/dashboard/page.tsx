@@ -88,6 +88,7 @@ export default function Dashboard() {
       // Load user stats
       const profile = getUserProfile()
       if (profile?.stats) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUserStats(profile.stats)
       }
 
