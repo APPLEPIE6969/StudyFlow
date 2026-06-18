@@ -2,25 +2,21 @@
 import { useLanguage } from "@/lib/i18n"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { getUserQuizzes, SavedQuiz } from "@/lib/quizStore"
+import { getUserQuizzes } from "@/lib/quizStore"
 import Link from "next/link"
 import { EmptyState } from "@/components/EmptyState"
 import { Sidebar } from "@/components/Sidebar"
 
 export default function StudySetsPage() {
     const { t } = useLanguage()
-    const [studySets, setStudySets] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    useEffect(() => { setIsMounted(true) }, [])
 
-    useEffect(() => {
-        // Load quizzes/study sets from local storage
-        const load = () => {
-            const loadedQuizzes = getUserQuizzes()
-            setStudySets(loadedQuizzes)
-            setIsLoading(false)
-        }
-        load()
-    }, [])
+    const isLoading = !isMounted
+    const studySets = isMounted ? getUserQuizzes() : []
+
+
 
     if (isLoading) {
         return (

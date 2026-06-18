@@ -25,8 +25,16 @@ export default function Courses() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { t } = useLanguage()
-  const [courses, setCourses] = useState<Course[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setIsMounted(true) }, [])
+
+  const email = session?.user?.email
+  const isRedirecting = status === "loading" ||
+                        status === "unauthenticated" ||
+                        (status === "authenticated" && email && isMounted && !isOnboardingComplete(email))
+  const isLoading = !isMounted || isRedirecting
+  const courses: Course[] = [] // Empty for new users
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -34,21 +42,12 @@ export default function Courses() {
       return
     }
 
-    if (status === "authenticated" && session?.user?.email) {
-      if (!isOnboardingComplete(session.user.email)) {
+    if (status === "authenticated" && email && isMounted) {
+      if (!isOnboardingComplete(email)) {
         router.push("/onboarding")
-        return
       }
-
-      // Load user's courses (empty for new users)
-      // In a real app, this would fetch from an API
-      const loadCourses = () => {
-        setCourses([])
-        setIsLoading(false)
-      }
-      loadCourses()
     }
-  }, [status, session, router])
+  }, [status, email, router, isMounted])
 
   if (status === "loading" || isLoading) {
     return (

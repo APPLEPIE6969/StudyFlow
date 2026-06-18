@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { isOnboardingComplete } from "@/lib/userStore"
-import { getUserQuizzes, deleteQuiz, SavedQuiz } from "@/lib/quizStore"
+import { getUserQuizzes, deleteQuiz } from "@/lib/quizStore"
 import Link from "next/link"
 import { useLanguage } from "@/lib/i18n"
 
@@ -14,8 +14,26 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    useEffect(() => { setIsMounted(true) }, [])
+
+    const email = session?.user?.email
+    const isRedirecting = status === "loading" ||
+                          status === "unauthenticated" ||
+                          (status === "authenticated" && email && isMounted && !isOnboardingComplete(email))
+    const isLoading = !isMounted || isRedirecting
+
+    const quizzes = isMounted ? getUserQuizzes() : []
+
+    const handleDelete = (id: string) => {
+        if (confirm(t("quizzes.delete_confirm"))) {
+            deleteQuiz(id)
+            // Force re-render not needed if we trigger storage event or just let user re-navigate, but let's add a state to trigger re-render
+            setRefresh(prev => prev + 1)
+        }
+    }
+    const [, setRefresh] = useState(0)
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -23,24 +41,14 @@ export default function MyQuizzes() {
             return
         }
 
-        if (status === "authenticated" && session?.user?.email) {
-            const email = session?.user?.email;
-            if (email && !isOnboardingComplete(email)) {
+        if (status === "authenticated" && email && isMounted) {
+            if (!isOnboardingComplete(email)) {
                 router.push("/onboarding")
-                return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
-    }, [status, session, router])
+    }, [status, email, router, isMounted])
 
-    const handleDelete = (id: string) => {
-        if (confirm(t("quizzes.delete_confirm"))) {
-            deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
-        }
-    }
+
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)

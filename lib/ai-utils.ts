@@ -1,4 +1,4 @@
-export function parseJSONFromAI(text: string): any {
+export function parseJSONFromAI<T = unknown>(text: string): T {
   if (!text || text.trim() === "") {
     throw new SyntaxError("Unexpected end of JSON input");
   }
