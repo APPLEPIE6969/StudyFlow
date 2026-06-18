@@ -339,7 +339,7 @@ const ManualTermItem = memo(({
     index: number;
     onUpdate: (index: number, field: "term" | "definition", value: string) => void;
     onDelete: (index: number) => void;
-    t: (key: string, ...args: any[]) => string;
+    t: (key: string, ...args: unknown[]) => string;
 }) => {
     return (
         <motion.div

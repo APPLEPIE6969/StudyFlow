@@ -25,8 +25,8 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
 
     // Check permission state on mount if possible
     useEffect(() => {
-        if (typeof navigator !== 'undefined' && navigator.permissions && (navigator.permissions as any).query) {
-            (navigator.permissions as any).query({ name: 'microphone' }).then((result: any) => {
+        if (typeof navigator !== 'undefined' && navigator.permissions && (navigator.permissions as unknown as { query: (params: { name: string }) => Promise<PermissionStatus> }).query) {
+            (navigator.permissions as unknown as { query: (params: { name: string }) => Promise<PermissionStatus> }).query({ name: 'microphone' }).then((result: PermissionStatus) => {
                 if (result.state === 'denied') {
                     // Pre-emptively show help if we know it's denied
                     // Actually clearer to wait for click to avoid annoying users
@@ -58,9 +58,9 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
             permissionState: 'unknown'
         }
 
-        if (navigator.permissions && (navigator.permissions as any).query) {
+        if (navigator.permissions && (navigator.permissions as unknown as { query: (params: { name: string }) => Promise<PermissionStatus> }).query) {
             try {
-                const result = await (navigator.permissions as any).query({ name: 'microphone' });
+                const result = await (navigator.permissions as unknown as { query: (params: { name: string }) => Promise<PermissionStatus> }).query({ name: 'microphone' });
                 info.permissionState = result.state;
             } catch (e) { }
         }
@@ -113,19 +113,19 @@ export function VoiceInput({ onAudioSend, disabled }: VoiceInputProps) {
 
             mediaRecorder.start()
             setIsRecording(true)
-        } catch (err: any) {
-            console.error("Mic Access Error:", err.name, err.message)
+        } catch (error: unknown) {
+            console.error("Mic Access Error:", (error instanceof Error ? error.name : 'UnknownError'), (error instanceof Error ? error.message : String(error)))
             setIsProcessing(false)
-            setLastError(err.name)
+            setLastError((error instanceof Error ? error.name : 'UnknownError'))
 
-            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError' || err.name === 'NotSecureContext') {
+            if ((error instanceof Error ? error.name : 'UnknownError') === 'NotAllowedError' || (error instanceof Error ? error.name : 'UnknownError') === 'PermissionDeniedError' || (error instanceof Error ? error.name : 'UnknownError') === 'NotSecureContext') {
                 setShowPermissionPrompt(true)
-            } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+            } else if ((error instanceof Error ? error.name : 'UnknownError') === 'NotFoundError' || (error instanceof Error ? error.name : 'UnknownError') === 'DevicesNotFoundError') {
                 alert("No microphone found. Please connect a microphone and try again.")
-            } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+            } else if ((error instanceof Error ? error.name : 'UnknownError') === 'NotReadableError' || (error instanceof Error ? error.name : 'UnknownError') === 'TrackStartError') {
                 alert("Your microphone is currently being used by another application.")
             } else {
-                alert(`Microphone error (${err.name}): ${err.message}`)
+                alert(`Microphone error (${(error instanceof Error ? error.name : 'UnknownError')}): ${(error instanceof Error ? error.message : String(error))}`)
             }
         }
     }

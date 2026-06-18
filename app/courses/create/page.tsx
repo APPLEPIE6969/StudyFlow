@@ -10,7 +10,15 @@ import Link from "next/link"
 export default function CreateCourse() {
     const { data: session, status } = useSession()
     const router = useRouter()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    useEffect(() => { setIsMounted(true) }, [])
+
+    const email = session?.user?.email
+    const isRedirecting = status === "loading" ||
+                          status === "unauthenticated" ||
+                          (status === "authenticated" && email && isMounted && !isOnboardingComplete(email))
+    const isLoading = !isMounted || isRedirecting
     const [courseName, setCourseName] = useState("")
     const [subject, setSubject] = useState("")
     const [description, setDescription] = useState("")
@@ -18,15 +26,12 @@ export default function CreateCourse() {
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login")
-        } else if (status === "authenticated" && session?.user?.email) {
-            const email = session?.user?.email;
-            if (email && !isOnboardingComplete(email)) {
+        } else if (status === "authenticated" && email && isMounted) {
+            if (!isOnboardingComplete(email)) {
                 router.push("/onboarding")
-            } else {
-                setIsLoading(false)
             }
         }
-    }, [status, session, router])
+    }, [status, email, router, isMounted])
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()

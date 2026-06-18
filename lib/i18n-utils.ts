@@ -4,7 +4,7 @@ export function translate(
     translations: Translations,
     language: string,
     key: string,
-    ...args: any[]
+    ...args: unknown[]
 ): string {
     const dict = translations[language] || translations["English"];
     let text = dict ? (dict[key] || key) : key;

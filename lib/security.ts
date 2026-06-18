@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
  * Signs data using HMAC-SHA256 with the AUTH_SECRET.
  * This ensures the data hasn't been tampered with when it's returned to the server.
  */
-export function signData(data: any): string {
+export function signData(data: unknown): string {
   const secret = process.env.AUTH_SECRET;
 
   if (!secret) {
@@ -24,7 +24,7 @@ export function signData(data: any): string {
  * Verifies that the provided signature matches the data.
  * Robust against timing attacks and length mismatches.
  */
-export function verifyData(data: any, signature: string): boolean {
+export function verifyData(data: unknown, signature: string): boolean {
   if (!signature) return false;
 
   try {
