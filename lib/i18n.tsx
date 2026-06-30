@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { getUserProfile } from "./userStore"
-import { LANGUAGES } from "./constants"
+
 import { translate } from "./i18n-utils"
 
 type Language = string
@@ -10,7 +10,7 @@ type Language = string
 interface LanguageContextType {
     language: Language
     setLanguage: (lang: Language) => void
-    t: (key: string, ...args: any[]) => string
+    t: (key: string, ...args: unknown[]) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -826,12 +826,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [language, setLanguageState] = useState<Language>("English")
 
     // Load from storage on mount
+
     useEffect(() => {
         const profile = getUserProfile()
         if (profile?.language) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLanguageState(profile.language)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
     const setLanguage = (lang: Language) => {
@@ -840,7 +842,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         // For now, we sync state here, and Profile page syncs to localStorage/UserProfile
     }
 
-    const t = (key: string, ...args: any[]) => {
+    const t = (key: string, ...args: unknown[]) => {
         return translate(translations, language, key, ...args)
     }
 

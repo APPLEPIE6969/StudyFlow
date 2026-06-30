@@ -1,4 +1,4 @@
-export function parseJSONFromAI(text: string): any {
+export function parseJSONFromAI<T = unknown>(text: string): T {
   if (!text || text.trim() === "") {
     throw new SyntaxError("Unexpected end of JSON input");
   }
@@ -6,14 +6,14 @@ export function parseJSONFromAI(text: string): any {
   // Stage 1: Direct Parse
   try {
     return JSON.parse(text);
-  } catch (e) {
+  } catch {
     // Stage 2: Markdown block extraction
     const markdownRegex = /```(?:json)?\s*([\s\S]*?)\s*```/g;
     let match;
     while ((match = markdownRegex.exec(text)) !== null) {
       try {
         return JSON.parse(match[1]);
-      } catch (e2) {
+      } catch {
         // continue trying other code blocks
       }
     }
@@ -24,7 +24,7 @@ export function parseJSONFromAI(text: string): any {
     if (arrayMatch) {
       try {
         return JSON.parse(arrayMatch[0]);
-      } catch (e3) {
+      } catch {
         // ignore
       }
     }
@@ -34,7 +34,7 @@ export function parseJSONFromAI(text: string): any {
     if (objectMatch) {
       try {
         return JSON.parse(objectMatch[0]);
-      } catch (e4) {
+      } catch {
         // ignore
       }
     }

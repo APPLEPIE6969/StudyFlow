@@ -18,9 +18,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false)
 
     // Initialize theme from localStorage or system preference
+
     useEffect(() => {
         const savedTheme = localStorage.getItem("theme") as Theme | null
         if (savedTheme) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setThemeState(savedTheme)
         } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             setThemeState("dark")
@@ -28,10 +30,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             setThemeState("light")
         }
         setMounted(true)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
     // Apply theme class to document
+
     useEffect(() => {
         if (!mounted) return
 

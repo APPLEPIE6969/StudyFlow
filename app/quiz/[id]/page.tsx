@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect, use } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { QuizQuestion } from "@/lib/ai"
+
 import { getQuizById, updateQuiz, SavedQuiz } from "@/lib/quizStore"
 import { recordActivity, addXP, updateUserStats, getUserProfile } from "@/lib/userStore"
 
