@@ -30,6 +30,7 @@ export default function MyQuizzes() {
                 return
             }
 
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuizzes(getUserQuizzes())
             setIsLoading(false)
         }
@@ -38,6 +39,7 @@ export default function MyQuizzes() {
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
+
             setQuizzes(getUserQuizzes())
         }
     }
