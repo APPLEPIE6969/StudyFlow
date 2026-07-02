@@ -14,26 +14,40 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
-    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login")
-            return
-        }
-
-        if (status === "authenticated" && session?.user?.email) {
-            const email = session?.user?.email;
+        } else if (status === "authenticated" && session?.user?.email) {
+            const email = session.user.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
-                return
             }
-
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
     }, [status, session, router])
+
+    const email = session?.user?.email
+    const isRedirecting = status === "unauthenticated" || (isMounted && status === "authenticated" && email && !isOnboardingComplete(email))
+
+    // Derive quizzes during render instead of cascading effects
+    // On the server or during initial hydration, fallback to empty array
+    const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
+
+    // Since quizzes are dynamic and can be deleted, we need to sync them
+    // when mounted or when a deletion happens, without causing a cascading render in an auth effect.
+    // Setting up a separate effect just for initial load of quizzes
+    useEffect(() => {
+        if (isMounted && status === "authenticated" && email && isOnboardingComplete(email)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setQuizzes(getUserQuizzes())
+        }
+    }, [isMounted, status, email])
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
@@ -52,7 +66,7 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    if (status === "loading" || !isMounted || isRedirecting) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">

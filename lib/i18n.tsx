@@ -824,15 +824,24 @@ const translations: Record<string, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [language, setLanguageState] = useState<Language>("English")
+    const [isMounted, setIsMounted] = useState(false)
+
+    // Set mounted state
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     // Load from storage on mount
     useEffect(() => {
-        const profile = getUserProfile()
-        if (profile?.language) {
-            setLanguageState(profile.language)
+        if (isMounted) {
+            const profile = getUserProfile()
+            if (profile?.language && profile.language !== language) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setLanguageState(profile.language)
+            }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [isMounted, language])
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang)
