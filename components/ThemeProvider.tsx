@@ -20,15 +20,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Initialize theme from localStorage or system preference
     useEffect(() => {
         const savedTheme = localStorage.getItem("theme") as Theme | null
+        let newTheme: Theme = "dark"
         if (savedTheme) {
-            setThemeState(savedTheme)
+            newTheme = savedTheme
         } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            setThemeState("dark")
+            newTheme = "dark"
         } else {
-            setThemeState("light")
+            newTheme = "light"
         }
+
+        // Only set state if it actually changed to avoid unnecessary renders
+        if (newTheme !== "dark") { // "dark" is the initial state
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setThemeState(newTheme)
+        }
+
+
         setMounted(true)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // Apply theme class to document
