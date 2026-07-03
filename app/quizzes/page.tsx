@@ -14,8 +14,13 @@ export default function MyQuizzes() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const { t } = useLanguage()
+    const [isMounted, setIsMounted] = useState(false)
     const [quizzes, setQuizzes] = useState<SavedQuiz[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true)
+    }, [])
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -23,17 +28,20 @@ export default function MyQuizzes() {
             return
         }
 
-        if (status === "authenticated" && session?.user?.email) {
+        if (isMounted && status === "authenticated" && session?.user?.email) {
             const email = session?.user?.email;
             if (email && !isOnboardingComplete(email)) {
                 router.push("/onboarding")
                 return
             }
 
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuizzes(getUserQuizzes())
-            setIsLoading(false)
         }
-    }, [status, session, router])
+    }, [status, session, router, isMounted])
+
+    const isRedirecting = status === "unauthenticated" || (isMounted && status === "authenticated" && session?.user?.email && !isOnboardingComplete(session.user.email))
+    const isLoading = !isMounted || status === "loading" || isRedirecting
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
@@ -52,7 +60,7 @@ export default function MyQuizzes() {
         })
     }
 
-    if (status === "loading" || isLoading) {
+    if (isLoading) {
         return (
             <div className="flex h-screen w-full items-center justify-center bg-background-dark">
                 <div className="flex flex-col items-center gap-4">
