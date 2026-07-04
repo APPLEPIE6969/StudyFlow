@@ -30,15 +30,19 @@ export default function MyQuizzes() {
                 return
             }
 
-            setQuizzes(getUserQuizzes())
-            setIsLoading(false)
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setQuizzes(getUserQuizzes())
+
+        setIsLoading(false)
         }
     }, [status, session, router])
 
     const handleDelete = (id: string) => {
         if (confirm(t("quizzes.delete_confirm"))) {
             deleteQuiz(id)
-            setQuizzes(getUserQuizzes())
+
+
+        setQuizzes(getUserQuizzes())
         }
     }
 
