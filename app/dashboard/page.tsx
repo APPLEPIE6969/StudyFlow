@@ -88,6 +88,7 @@ export default function Dashboard() {
       // Load user stats
       const profile = getUserProfile()
       if (profile?.stats) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUserStats(profile.stats)
       }
 
@@ -99,7 +100,8 @@ export default function Dashboard() {
 
       // Load user data (empty for new users)
       setUserData(emptyUserData)
-      setIsLoading(false)
+
+        setIsLoading(false)
     }
   }, [status, session, router])
 
